@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import axios from 'axios'
+import './globals.css'
 export default function Home() {
     const [inputText, setInputText] = useState('');
     const [responseMessage, setResponseMessage] = useState('');

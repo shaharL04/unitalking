@@ -11,7 +11,7 @@ router.post('/createUserInDB', userController.createUser);
 
 //Messages routers
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);
-router.post('/newIncomingMessage', messageController.newIncomingMessage);
+router.post('/newMessage', messageController.newMessage);
 
 
 //Chat routers

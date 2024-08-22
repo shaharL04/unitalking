@@ -4,10 +4,10 @@ import validateAuthToken from '../utils/validateAuthToken';
 class messageController{
     async retrieveChatMessagesInOrder(req: Request, res: Response) {
         const userId: string = req.body.userId;
-        const contactUserId: string = req.body.otherUserId;
+        const groupId: string = req.body.groupId;
         try {
-        const userMessages = await messageService.retrieveMessagesSentByUser(userId, contactUserId);
-        const contactMessages = await messageService.retrieveMessagesSentByContact(userId, contactUserId );
+        const userMessages = await messageService.retrieveMessagesSentByUser(userId, groupId);
+        const contactMessages = await messageService.retrieveMessagesSentByContact(userId, groupId );
         const SortedMessages = await messageService.sortAllMessagesByTimeOrder(userMessages,contactMessages)
         res.status(200).json({ SortedMessagesArr: SortedMessages});
         
@@ -17,7 +17,7 @@ class messageController{
         }
     }
 
-    async newIncomingMessage(req: Request, res: Response){
+    async newMessage(req: Request, res: Response){
         const authToken = req.cookies.authToken
         console.log("auth tokennnn"+authToken )
         const userId: string | null = validateAuthToken(authToken);
@@ -26,9 +26,9 @@ class messageController{
         }
 
         const incomingMessage: string = req.body.newMessage;
-        const targetUserId: string = req.body.targertedUserId;
+        const targetChatId: string = req.body.targetChatId;
         try {
-        const userMessages = await messageService.newMessageIncoming(userId, targetUserId,incomingMessage);
+        const userMessages = await messageService.newMessage(userId, targetChatId,incomingMessage);
         res.status(200).json({ message: userMessages});
         
         } catch (error) {

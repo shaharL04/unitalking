@@ -3,15 +3,15 @@ import { Message } from '../types/message';
 
 class messageService{
   
-   async retrieveMessagesSentByUser (userId: string, contactUserId: string): Promise<Message[]> {
+   async retrieveMessagesSentByUser (userId: string, groupId: string): Promise<Message[]> {
     const query = `
       SELECT * FROM messages
-      WHERE sender_id = $1 AND receiver_id = $2
+      WHERE sender_id = $1 AND receiver_group_id = $2
       ORDER BY timestamp;
     `;
     
     try {
-      const result = await pool.query(query, [userId, contactUserId]);
+      const result = await pool.query(query, [userId, groupId]);
       return result.rows;
     } catch (error) {
       console.error('Error executing query:', error);
@@ -19,15 +19,15 @@ class messageService{
     }
   };
 
-   async retrieveMessagesSentByContact (userId: string, contactUserId: string): Promise<Message[]> {
+   async retrieveMessagesSentByContact (userId: string, groupId: string): Promise<Message[]> {
     const query = `
       SELECT * FROM messages
-      WHERE sender_id = $1 AND receiver_id = $2
+      WHERE sender_id = $1 AND receiver_group_id = $2
       ORDER BY timestamp;
     `;
     
     try {
-      const result = await pool.query(query, [contactUserId, userId]);
+      const result = await pool.query(query, [groupId, userId]);
       return result.rows;
     } catch (error) {
       console.error('Error executing query:', error);
@@ -41,15 +41,15 @@ class messageService{
     return combinedMessagesArr;
   }
 
-  async newMessageIncoming (userId: string, targetUserId: string, incomingMessage: string): Promise<Message[]> {
+  async newMessage (userId: string, targetGroupId: string, incomingMessage: string): Promise<Message[]> {
     const query = `
-    INSERT INTO messages (sender_id, receiver_id, message_type, content)
+    INSERT INTO messages (sender_id, receiver_group_id, message_type, content)
     VALUES ($1, $2, 'text', $3)
     RETURNING *;
   `;
     
     try {
-      const result = await pool.query(query, [userId, targetUserId, incomingMessage]);
+      const result = await pool.query(query, [userId, targetGroupId, incomingMessage]);
       console.log("this is the result rows after new incoming message"+JSON.stringify(result.rows[0]))
       return result.rows[0];
     } catch (error) {

@@ -1,0 +1,51 @@
+import { Request, Response } from 'express';
+import userService from '../services/userService';
+import generateToken from '../utils/generateToken'
+
+class userController{
+    async checkIfUserExists(req: Request, res: Response) {
+      console.log("hi I am here")
+        const { email, password } = req.body;
+        try {
+          const getUserIfExist = await userService.checkIfUserInDB(email);
+          console.log(getUserIfExist);
+          if(getUserIfExist != null){
+            const checkUserPassword = await userService.verifyUserPassword(password,getUserIfExist)
+            if(checkUserPassword){
+              const token = generateToken(getUserIfExist.id)
+              console.log(token);
+              res.cookie('authToken', token, {
+                httpOnly: true,
+                secure: false, // Ensure this is set correctly
+                maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+                path: '/',
+              });
+              res.status(200).json({ message :"success" });
+            }
+            else{
+              res.status(400).json({ message :"wrong credentials" });
+            }
+          }
+          else{
+            res.status(404).json({ message :"user doesn't exist" });
+          }
+          
+        } catch (error) {
+          console.error('Error checking user existence:', error);
+          res.status(500).json({ message: 'An error occurred while checking user existence.' });
+        }
+      }
+    
+      async createUser(req: Request, res: Response) {
+        const { name, email, password } = req.body;
+        try {
+          const newUser = await userService.createUser(name, email, password);
+          res.status(201).json(newUser);
+        } catch (error) {
+          console.error('Error creating user:', error);
+          res.status(500).json({ message: 'An error occurred while creating the user.' });
+        }
+      }
+}
+
+export default new userController();

@@ -1,112 +1,96 @@
-import express, { Request, Response ,NextFunction} from 'express';
+import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
-import axios from 'axios'
-import { pool } from './dbConfig';
-import { Query } from 'pg';
+import router from './routes/index';
+import cookieParser from 'cookie-parser';
+import corsMiddleware from './middlewares/corsMiddleware';
+import checkOrigin from './middlewares/originCheckMiddleware';
+import validateAuthToken from './utils/validateAuthToken';
+import https from 'https';
+import fs from 'fs';
+import WebSocket from 'ws';
+import { IncomingMessage } from 'http';
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = Number(process.env.PORT) || 5000;
 
-const corsOptions = {
-  origin: 'http://localhost:3000', 
-};
-
-
-const checkOrigin = (req: Request, res: Response, next: NextFunction) => {
-  const allowedOrigin = 'http://localhost:3000';
-  const origin = req.headers.origin;
-
-  if (origin && origin === allowedOrigin) {
-    next();
-  } else {
-    res.status(403).json({ message: 'Forbidden: Invalid Origin' });
-  }
-};
-
-//Middleware
-app.use(cors(corsOptions));
+app.use(corsMiddleware);
 app.use(checkOrigin);
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use('/', router);
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, world!');
+// WebSocket START
+
+const wss = new WebSocket.Server({ port: 9000 });
+
+// Store multiple connections per user
+const userConnections: Record<string, WebSocket[]> = {};
+
+wss.on('listening', () => {
+  console.log('WebSocket server is listening for connections');
 });
 
-app.post('/api/translate', async (req: Request, res: Response) => {
-  const inputText: string = req.body.text;
-    try {
-      const translatedRes = await axios.post('http://localhost:5000/translate', {
-        q: inputText,
-        source: "auto",
-        target: "en",
-        format: "text",
-        alternatives: 3
-      }, {
-        headers: { "Content-Type": "application/json" }
-      });
+wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+  console.log('New WebSocket connection established');
 
-      res.status(200).json({ translatedText: translatedRes.data.translatedText });
-    } catch (error) {
-      console.error('Error sending request:', error);
-      res.status(500).json({ message: 'An error occurred while sending the request.' });
+  // Extract cookies from the request header
+  const cookiesHeader = req.headers.cookie || '';
+  const cookies = cookiesHeader.split('; ').reduce((prev, curr) => {
+    const [name, value] = curr.split('=');
+    prev[name] = value;
+    return prev;
+  }, {} as Record<string, string>);
+  const authToken = cookies['authToken'] || '';
+  const userId = validateAuthToken(authToken);
+
+  if (userId) {
+    // Initialize connection array if not present
+    if (!userConnections[userId]) {
+      userConnections[userId] = [];
     }
+
+    // Add the new WebSocket connection to the user's connection array
+    userConnections[userId].push(ws);
+    console.log(`User ${userId} connected`);
+
+
+    ws.on('message', (message: WebSocket.MessageEvent) => {
+      console.log(`Received message from user ${userId}: ${message.toString()}`);
+      try {
+        const { targetUserId, data } = JSON.parse(message.toString());
+        if (userConnections[targetUserId]) {
+          // Send the message to all connections of the target user
+          userConnections[targetUserId].forEach(conn => conn.send(data));
+          console.log(`Message sent to user ${targetUserId}`);
+        } else {
+          console.log(`User ${targetUserId} not connected`);
+        }
+      } catch (error) {
+        console.error('Message handling error:', error);
+      }
+    });
+
+    // Handle WebSocket closure
+    ws.on('close', (code: number, reason: string) => {
+      console.log(`WebSocket connection closed for user ${userId} with code ${code} and reason: ${reason}`);
+      userConnections[userId] = userConnections[userId].filter(conn => conn !== ws);
+
+      // If no more connections for this user, delete the entry
+      if (userConnections[userId].length === 0) {
+        delete userConnections[userId];
+      }
+    });
+  } else {
+    console.log('Invalid user, closing WebSocket connection');
+    ws.close();
+  }
 });
 
-app.post('/retrieveChatMessagesInOrder',  (req: Request, res: Response) => {
-  const userId: string = req.body.userId;
-  const contactUserId: string = req.body.otherUserId;
-    try {
-      
-
-      res.status(200).json({ message: 'An error occurred while sending the request.' });
-    } catch (error) {
-      console.error('Error sending request:', error);
-      res.status(500).json({ message: 'An error occurred while sending the request.' });
-    }
+wss.on('error', (error) => {
+  console.error('WebSocket server error:', error);
 });
 
-async function retrieveMessagesSentByUser(userId: string,contactUserId: string){
-  const query = `
-    SELECT * FROM messages
-    WHERE sender_id = $1 AND receiver_id = $2
-    ORDER BY timestamp;
-  `;
-
-  try {
-
-    const result = await pool.query(query, [userId, contactUserId]);
-    console.log(result.rows);
-    return result.rows;
-
-  } catch (error) {
-
-    console.error('Error executing query:', error);
-    throw error; 
-  }
-  
-}
-
-async function retrieveMessagesSentByContact(userId: string,contactUserId: string ) {
-  const query = `
-    SELECT * FROM messages
-    WHERE sender_id = $1 AND receiver_id = $2
-    ORDER BY timestamp;
-  `;
-
-  try {
-
-    const result = await pool.query(query, [contactUserId, userId]);
-    console.log(result.rows);
-    return result.rows;
-
-  } catch (error) {
-
-    console.error('Error executing query:', error);
-    throw error; 
-  }
-  
-}
+// WebSocket END
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

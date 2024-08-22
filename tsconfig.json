@@ -11,5 +11,5 @@
     },
     "include": ["server/**/*", "../frontend/index.ts"],
     "exclude": ["node_modules"]
-  }
+}
   

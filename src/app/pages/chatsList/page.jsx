@@ -5,7 +5,6 @@ import axios from 'axios';
 import './chatsList.css'
 
 const ChatsList = () => {
-  const [, setSelectedChat] = useState([]);
   const [chats, setChats] = useState([]);
 
   //retrieve user chats

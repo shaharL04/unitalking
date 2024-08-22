@@ -22,7 +22,7 @@ export default function Chat() {
       try {
         const response = await axios.post("http://localhost:5000/retrieveChatMessagesInOrder", {
           userId: "1",
-          otherUserId: "2",
+          groupId: "9",
         }); 
         setSortedMessagesArray(response.data.SortedMessagesArr);
 
@@ -77,9 +77,9 @@ export default function Chat() {
 
   const sendText = async() => {
     if (socket) {
-      const targetUserId = '9'; 
+      const targetChatId = '9'; 
       const messageData = {
-        targetUserId,
+        targetChatId,
         data: message 
       };
 
@@ -88,9 +88,9 @@ export default function Chat() {
 
     }
 
-    const response = await axios.post("http://localhost:5000/newIncomingMessage", {
+    const response = await axios.post("http://localhost:5000/newMessage", {
           newMessage:message,
-          targertedUserId: "2",
+          targetChatId: "9",
     }, { withCredentials: true }); 
     console.log("response after inserting new M"+JSON.stringify(response.data.message))
     setSortedMessagesArray([...sortedMessagesArray,response.data.message] )

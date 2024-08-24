@@ -22,8 +22,6 @@ app.use('/', router);
 // WebSocket START
 
 const wss = new WebSocket.Server({ port: 9000 });
-
-// Store multiple connections per user
 const userConnections: Record<string, WebSocket[]> = {};
 
 wss.on('listening', () => {
@@ -57,18 +55,28 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     ws.on('message', (message: WebSocket.MessageEvent) => {
       console.log(`Received message from user ${userId}: ${message.toString()}`);
       try {
-        const { targetUserId, data } = JSON.parse(message.toString());
-        if (userConnections[targetUserId]) {
-          // Send the message to all connections of the target user
-          userConnections[targetUserId].forEach(conn => conn.send(data));
-          console.log(`Message sent to user ${targetUserId}`);
+        const { targetChatUserIdArr, data } = JSON.parse(message.toString());
+    
+        if (Array.isArray(targetChatUserIdArr) && targetChatUserIdArr.length > 0) {
+          // Send the message to all users specified in targetUserIds array
+          targetChatUserIdArr.forEach(userId => sendToUser(userId, data));
         } else {
-          console.log(`User ${targetUserId} not connected`);
+          console.log('No valid target users provided or targetUserIds is empty');
         }
       } catch (error) {
         console.error('Message handling error:', error);
       }
     });
+    
+    // Helper function to send a message to a single user
+    function sendToUser(targetUserId: string, data: any) {
+      if (userConnections[targetUserId]) {
+        userConnections[targetUserId].forEach(conn => conn.send(JSON.stringify(data)));
+        console.log(`Message sent to user ${targetUserId}`);
+      } else {
+        console.log(`User ${targetUserId} not connected`);
+      }
+    }
 
     // Handle WebSocket closure
     ws.on('close', (code: number, reason: string) => {

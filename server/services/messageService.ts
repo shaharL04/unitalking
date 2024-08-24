@@ -19,15 +19,16 @@ class messageService{
     }
   };
 
-   async retrieveMessagesSentByContact (userId: string, groupId: string): Promise<Message[]> {
+   async retrieveMessagesSentByGroupUsers (userId: string, groupId: string): Promise<Message[]> {
     const query = `
       SELECT * FROM messages
-      WHERE sender_id = $1 AND receiver_group_id = $2
+      WHERE sender_id != $1 AND receiver_group_id = $2
       ORDER BY timestamp;
     `;
     
     try {
-      const result = await pool.query(query, [groupId, userId]);
+      const result = await pool.query(query, [userId,groupId]);
+      console.log("chatByothers"+result.rows)
       return result.rows;
     } catch (error) {
       console.error('Error executing query:', error);
@@ -47,9 +48,16 @@ class messageService{
     VALUES ($1, $2, 'text', $3)
     RETURNING *;
   `;
+
+    const queryToUpdateChatLatestMessage = `
+    UPDATE chats
+    SET updated_at = CURRENT_TIMESTAMP, latest_message_in_chat = $1
+    WHERE id = $2
+  `;
     
     try {
       const result = await pool.query(query, [userId, targetGroupId, incomingMessage]);
+      const resultToUpdateChatLatestMessage = await pool.query(queryToUpdateChatLatestMessage, [incomingMessage, targetGroupId ]);
       console.log("this is the result rows after new incoming message"+JSON.stringify(result.rows[0]))
       return result.rows[0];
     } catch (error) {

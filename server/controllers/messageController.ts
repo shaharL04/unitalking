@@ -7,7 +7,7 @@ class messageController{
         const groupId: string = req.body.groupId;
         try {
         const userMessages = await messageService.retrieveMessagesSentByUser(userId, groupId);
-        const contactMessages = await messageService.retrieveMessagesSentByContact(userId, groupId );
+        const contactMessages = await messageService.retrieveMessagesSentByGroupUsers(userId, groupId );
         const SortedMessages = await messageService.sortAllMessagesByTimeOrder(userMessages,contactMessages)
         res.status(200).json({ SortedMessagesArr: SortedMessages});
         
@@ -18,6 +18,7 @@ class messageController{
     }
 
     async newMessage(req: Request, res: Response){
+        console.log("bodyyy"+ JSON.stringify(req.body))
         const authToken = req.cookies.authToken
         console.log("auth tokennnn"+authToken )
         const userId: string | null = validateAuthToken(authToken);

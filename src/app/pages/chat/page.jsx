@@ -7,32 +7,71 @@ import SendBtn from "@/src/components/sendBtn";
 import "@/src/app/daisui.css";
 import "./chat.css";
 import axios from 'axios'; 
+import { useRouter } from 'next/navigation';
+import CryptoJS from 'crypto-js';
+import { closeOnEscape } from "@mantine/core";
+
+
+const SECRET_KEY = 'your-secret-key'; 
+
+
+const decrypt = (encryptedText) => {
+  const bytes = CryptoJS.AES.decrypt(encryptedText, SECRET_KEY);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};
+
 
 export default function Chat() { 
   const [message, setMessage] = useState('');
-  const [responseMessage, setResponseMessage] = useState('');
-  const [tempVar, setTempVar] = useState('');
   const [hasInput, setHasInput] = useState(false);
   const [sortedMessagesArray, setSortedMessagesArray] = useState([]);
   const [socket, setSocket] = useState(null);
+  const [decryptedGroupId, setDecryptedGroupId] = useState(null);
+  const [decryptedUsersInGroupArr, setDecryptedUsersInGroupArr] = useState([]);
+  const [decryptedUserId, setDecryptedUserId] = useState(null);
 
-  //Use effect for retriving messages
   useEffect(() => {
-    const retreiveMessages = async () => {
-      try {
-        const response = await axios.post("http://localhost:5000/retrieveChatMessagesInOrder", {
-          userId: "1",
-          groupId: "9",
-        }); 
-        setSortedMessagesArray(response.data.SortedMessagesArr);
+    const retrieveValuesFromUrl = async () => {
+      const query = new URLSearchParams(window.location.search);
+      const encrypteGroupId = query.get('selectedChatId');
+      const encrypteUsersInGroupId = query.get('usersInGroup');
+      const encrypteUserId = query.get('userId');
+      if (encrypteGroupId && encrypteUserId) {
+        try {
+          const decryptedGroupIdString = decrypt(encrypteGroupId);
 
-      } catch (error) {
-        console.error("Error fetching chat messages:", error);
+          const decryptedUsersInGroup = decrypt(encrypteUsersInGroupId);
+          const usersInGroupArray = decryptedUsersInGroup.split(',');
+          console.log("decrypted chat users+:"+Array.isArray(usersInGroupArray) +"  "+ usersInGroupArray )
+          const decryptedUserIdString = decrypt(encrypteUserId);
+
+          setDecryptedGroupId(decryptedGroupIdString);
+          setDecryptedUsersInGroupArr(usersInGroupArray)
+          setDecryptedUserId(decryptedUserIdString);
+
+          await retrieveMessages(decryptedGroupIdString, decryptedUserIdString);
+        } catch (error) {
+          console.error("Error decrypting user IDs:", error);
+        }
       }
     };
 
-    retreiveMessages();
-  }, []);
+    retrieveValuesFromUrl();
+  }, []); 
+
+  const retrieveMessages = async (decryptedGroupIdString, decryptedUserIdString) => {
+    try {
+      const response = await axios.post("http://localhost:5000/retrieveChatMessagesInOrder", {
+        userId: decryptedUserIdString,
+        groupId: decryptedGroupIdString,
+      });
+      console.log("all of the messages in this chat group"+JSON.stringify(response.data.SortedMessagesArr));
+      setSortedMessagesArray(response.data.SortedMessagesArr); 
+
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+    }
+  };
 
 
   // Establish WebSocket connection - START
@@ -46,9 +85,9 @@ export default function Chat() {
 
     ws.onmessage = (event) => {
       console.log(event.data)
-      const data = event.data;
-      console.log('Received message:', data);
-      setTempVar(data);
+      const data = JSON.parse(event.data);
+      console.log('Received message Object:', data);
+      setSortedMessagesArray(prevMessages => [...prevMessages, data]);
     };
 
     ws.onerror = (error) => {
@@ -76,24 +115,23 @@ export default function Chat() {
   };
 
   const sendText = async() => {
-    if (socket) {
-      const targetChatId = '9'; 
-      const messageData = {
-        targetChatId,
-        data: message 
-      };
+    const response = await axios.post("http://localhost:5000/newMessage", {
+      newMessage:message,
+      targetChatId: decryptedGroupId,
+      }, { withCredentials: true }); 
+      console.log("response after inserting new M"+JSON.stringify(response.data.message))
+      setSortedMessagesArray(prevMessages => [...prevMessages, response.data.message]);
 
+    if (socket) {
+      const targetChatUserIdArr = decryptedUsersInGroupArr; 
+      const messageData = {
+        targetChatUserIdArr,
+        data: response.data.message 
+      };
       // Send the message to the WebSocket server
       socket.send(JSON.stringify(messageData));
-
     }
 
-    const response = await axios.post("http://localhost:5000/newMessage", {
-          newMessage:message,
-          targetChatId: "9",
-    }, { withCredentials: true }); 
-    console.log("response after inserting new M"+JSON.stringify(response.data.message))
-    setSortedMessagesArray([...sortedMessagesArray,response.data.message] )
     setMessage('');
   }
   // LATER DEVELOPMENT OF TEXT BEING TRANSLATED - STARTED
@@ -118,17 +156,16 @@ export default function Chat() {
 
   return (
     <div className="App">
-      <div>
+      <div className="messagesDiv">
       {
         sortedMessagesArray.map((item, index) => {
-          console.log("this is var value:"+tempVar);
-          console.log(JSON.stringify(item));
-          console.log(item.sender_id);
-          return item.sender_id == "1" ? (
+
+          return item.sender_id == decryptedUserId ? (
             <MyCreatedMessages key={index} message={item.content} />
           ) : (
             <OthersCreatedMessages key={index} message={item.content} />
           );
+
         })
       }
       </div>

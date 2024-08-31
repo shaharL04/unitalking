@@ -4,3 +4,7 @@
     display: inline-block; 
     width: 100vw;
 }
+
+.modalChat > div > section{
+    height: 76vh;
+}

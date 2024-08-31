@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import userService from '../services/userService';
 import generateToken from '../utils/generateToken'
+import validateAuthToken from '../utils/validateAuthToken'
 
 class userController{
     async checkIfUserExists(req: Request, res: Response) {
@@ -44,6 +45,22 @@ class userController{
         } catch (error) {
           console.error('Error creating user:', error);
           res.status(500).json({ message: 'An error occurred while creating the user.' });
+        }
+      }
+
+      async getAllUsers(req:Request, res:Response){
+        const authToken = req.cookies.authToken
+        console.log(authToken)
+        const userId: string | null = validateAuthToken(authToken);
+        if (userId === null) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+        }  
+        try{
+          const allUsers = await userService.getAllUsers(userId)
+          res.status(201).json(allUsers);
+        }catch(error){
+          console.log('error getting all users:', error);
+          res.status(500).json({message: 'An error occurred while getting all users.'})
         }
       }
 }

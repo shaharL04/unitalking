@@ -5,9 +5,10 @@ import chatController from '../controllers/chatController'
 
 const router: Router = Router();
 
-//DB routers
+//user routers
 router.post('/checkIfUserExistInDB', userController.checkIfUserExists);
 router.post('/createUserInDB', userController.createUser);
+router.post('/getAllUsers', userController.getAllUsers);
 
 //Messages routers
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);

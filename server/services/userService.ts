@@ -34,6 +34,13 @@ class userService {
     const isMatch = await bcrypt.compare(password, user.password_hash);
     return isMatch;
   }
+
+  async getAllUsers(userId: string): Promise<any>{
+    const query = 'SELECT id,username FROM users WHERE id != $1'
+    const result = await pool.query(query, [userId]);
+    console.log("ALL users results"+JSON.stringify(result.rows));
+    return result
+  }
 }
 
 export default new userService();

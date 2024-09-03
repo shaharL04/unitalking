@@ -1,9 +1,13 @@
 import { Router } from 'express';
+import multer from 'multer';
 import userController from '../controllers/userController';
 import messageController from '../controllers/messageController';
 import chatController from '../controllers/chatController'
+import { multerStorage } from '../utils/handleFiles';
 
 const router: Router = Router();
+
+const uploadChatPhoto = multer({ storage: multerStorage });
 
 //user routers
 router.post('/checkIfUserExistInDB', userController.checkIfUserExists);
@@ -17,7 +21,9 @@ router.post('/newMessage', messageController.newMessage);
 
 //Chat routers
 router.post('/retrieveAllChatsTheUserHasByTimeOrder', chatController.retrieveAllChatsTheUserHasByTimeOrder);
+router.post('/createNewChat', uploadChatPhoto.single('groupImage'), chatController.createNewChat);
 router.post('/getChatUsers', chatController.getChatUsers);
+
 //Translate routers
 //router.post('/api/translate', UserController.createUser);
 

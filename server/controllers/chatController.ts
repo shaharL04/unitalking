@@ -14,7 +14,9 @@ class chatController{
         try {
             console.log("reached here 22")
             const sortedChats = await chatService.retrieveAllChatsTheUserHasByTimeOrder(userId);
-            res.status(200).json({ sortedChats: sortedChats});     
+            const sortedChatsWithPhotoPaths = await chatService.retrieveAllChatsPhotos(sortedChats)
+            console.log("sortedChatsWithPhotoPaths "+JSON.stringify(sortedChatsWithPhotoPaths))
+            res.status(200).json({ sortedChats: sortedChatsWithPhotoPaths});     
             } catch (error) {
             console.error('Error sending request:', error);
             res.status(500).json({ message: 'An error occurred while sending the request.' });
@@ -27,6 +29,30 @@ class chatController{
             console.log("usersInChats:"+JSON.stringify(usersInChats))
             res.status(200).json({ usersInChats: usersInChats});     
             } catch (error) {
+            console.error('Error sending request:', error);
+            res.status(500).json({ message: 'An error occurred while sending the request.' });
+        }
+    }
+
+    async createNewChat(req: Request, res: Response){
+        const { groupName, groupMembersArr } = req.body; 
+
+        const authToken = req.cookies.authToken
+        const userId: string | null = validateAuthToken(authToken);
+        if (userId === null) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+        }
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+        const fileNameParts = req.file.filename.split('_');
+        const uniqueToSendToDB = fileNameParts[0];
+        const parsedgroupMembersArr = JSON.parse(groupMembersArr);
+        try{
+            const chat_id = await chatService.createNewChat(groupName, uniqueToSendToDB);
+            const insertIntoChatParticipants = await chatService.insertUsersToNewChat(chat_id, parsedgroupMembersArr,userId)
+            res.status(200).json({message: "chat was succesfully initiated"})
+        }catch(error){
             console.error('Error sending request:', error);
             res.status(500).json({ message: 'An error occurred while sending the request.' });
         }

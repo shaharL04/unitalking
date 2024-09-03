@@ -4,20 +4,23 @@ import router from './routes/index';
 import cookieParser from 'cookie-parser';
 import corsMiddleware from './middlewares/corsMiddleware';
 import checkOrigin from './middlewares/originCheckMiddleware';
+import cors from "cors"
 import validateAuthToken from './utils/validateAuthToken';
-import https from 'https';
-import fs from 'fs';
+import path from 'path';
 import WebSocket from 'ws';
 import { IncomingMessage } from 'http';
 
 const app = express();
-const port = Number(process.env.PORT) || 5000;
-
+const port = Number(process.env.PORT) || 8080;
 app.use(corsMiddleware);
 app.use(checkOrigin);
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/', router);
+
+const staticFilesPath = path.join(__dirname, '..', 'photos', 'chatPhotos');
+app.use('/chatPhotos', express.static(staticFilesPath));
 
 // WebSocket START
 
@@ -101,5 +104,5 @@ wss.on('error', (error) => {
 // WebSocket END
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`${staticFilesPath} Server is running on port ${port}`);
 });

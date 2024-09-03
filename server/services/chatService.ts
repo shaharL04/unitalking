@@ -1,5 +1,8 @@
 import { json } from 'body-parser';
 import { pool } from '../config/dbConfig';
+import { sumUser } from '../types/sumUser';
+import { User } from '../types/user';
+import findPhotosByUnique from '../utils/findPhotoByUnique';
 
 class chatService{
     async retrieveAllChatsTheUserHasByTimeOrder (userId: string) {
@@ -21,6 +24,22 @@ class chatService{
       }
     };
 
+    async retrieveAllChatsPhotos(sortedChatsArr: any[]){
+      const chatIdNUniqueArray: { chatId: string; uniqueToMatchInFolder: string }[] = [];
+      sortedChatsArr.forEach((chat, index) => {
+        const uniqueToMatchInFolder: string = chat.group_photo;
+        chatIdNUniqueArray[index] = { chatId: chat.id, uniqueToMatchInFolder: uniqueToMatchInFolder }; 
+      });
+      const photosPathArray = findPhotosByUnique(chatIdNUniqueArray);
+      const sortedChatsArrWPhotoPaths = sortedChatsArr.map((chat,index) =>{
+        if(photosPathArray[index]?.chatId == chat.id){
+          chat.group_photo = photosPathArray[index]?.pathToPhoto;
+        }
+        return chat
+      })
+      return sortedChatsArrWPhotoPaths;
+    }
+
     async getChatUsers (userId: string, chatID: string) {
       console.log(userId);
       console.log(chatID);
@@ -38,6 +57,31 @@ class chatService{
       }
     };
     
+    async createNewChat(groupName: string , photoUnique: string ): Promise<string>{
+      const query = `INSERT INTO chats (name, group_photo)VALUES ($1, $2) RETURNING id;`
+      try {
+        const result = await pool.query(query, [groupName, photoUnique]);
+        return result.rows[0].id
+      } catch (error) {
+        console.error('Error executing query:', error);
+        throw error;
+      }
+    }
 
+    async insertUsersToNewChat(chat_id:string , groupMembersArr: sumUser[], currentLoggedUser: string){
+      const query = `INSERT INTO chat_participants(chat_id, user_id)VALUES ($1, $2) `
+      try {
+        
+        console.log("groupMembersArr backend"+ groupMembersArr)
+        groupMembersArr.map(async (userObject) =>{
+          const userIdToInsert = userObject.id;
+          const result = await pool.query(query, [chat_id, userIdToInsert]);
+        }) 
+        const result = await pool.query(query, [chat_id, currentLoggedUser]);
+      } catch (error) {
+        console.error('Error executing query:', error);
+        throw error;
+      }
+    }
 }
 export default new chatService();

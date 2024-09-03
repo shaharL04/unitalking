@@ -10,7 +10,7 @@ const ChatItem = ({ chat, onClick }) => {
   return (
     <div onClick={onClick} className='ChatItemDivWrapper'>
       <div className="circular-image-container">
-          <img src="path-to-your-image.jpg" alt="Profile Image" className="circular-image" />
+          <img src={`http://localhost:8080/chatPhotos/${chat.group_photo}`} alt="Profile Image" className="circular-image" />
       </div>
     
       <div className="chat-details">

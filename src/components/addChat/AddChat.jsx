@@ -3,7 +3,7 @@ import './addChat.css';
 import SearchBox from '../searchBox/SearchBox';
 import axios from 'axios';
 
-const AddChat = () => {
+const AddChat = ({ newChatHandler }) => {
   const [groupName, setGroupName] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [groupImage, setGroupImage] = useState(null);
@@ -12,7 +12,7 @@ const AddChat = () => {
 
   useEffect(() => {
     const getAllUsersArray = async () => {
-      const response = await axios.post('http://localhost:5000/getAllUsers', { test: "test" }, { withCredentials: true });
+      const response = await axios.post('http://localhost:8080/getAllUsers', { test: "test" }, { withCredentials: true });
       console.log("this is all users Arr: " + JSON.stringify(response.data.rows));
       setAllUsers(response.data.rows);
     };
@@ -53,10 +53,17 @@ const AddChat = () => {
       return;
     }
 
-    
     console.log("Group Name:", groupName);
     console.log("Group Image:", groupImage);
     console.log("Selected Members:", selectedMembers);
+
+    const newChatData = {
+      groupName,
+      groupImage,
+      selectedMembers
+    };
+
+    newChatHandler(newChatData);
   };
 
   const filteredOptions = allUsers.filter(user => !selectedMembers.some(member => member.id === user.id));

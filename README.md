@@ -35,4 +35,4 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-docker run -ti --rm -p 127.0.0.1:5000:5000 libretranslate/libretranslate
+docker run -ti --rm -p 127.0.0.1:8080:8080 libretranslate/libretranslate

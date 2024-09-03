@@ -9,7 +9,7 @@ export default function Home() {
 
     async function simpleTranslate(){
       try{
-        const response = await axios.post("http://localhost:5000/api/translate", {text: inputText});
+        const response = await axios.post("http://localhost:8080/api/translate", {text: inputText});
         console.log(response.data.translatedText);
         setResponseMessage(response.data.translatedText);
       } catch (error) {

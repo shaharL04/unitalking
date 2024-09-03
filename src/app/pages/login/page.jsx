@@ -43,12 +43,12 @@ export default function Login() {
   }
 
   async function checkIfUserExist(email,password){
-    const response = await axios.post("http://localhost:5000/checkIfUserExistInDB" , {email:email , password: password}, { withCredentials: true })
+    const response = await axios.post("http://localhost:8080/checkIfUserExistInDB" , {email:email , password: password}, { withCredentials: true })
     router.push('/pages/chatsList')
   }
 
   async function createNewUser(name, email,password){
-    const response = await axios.post("http://localhost:5000/createUserInDB",{name:name , email:email , password: password} )
+    const response = await axios.post("http://localhost:8080/createUserInDB",{name:name , email:email , password: password} )
   }
 
   return (

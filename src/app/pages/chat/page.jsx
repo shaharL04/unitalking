@@ -61,7 +61,7 @@ export default function Chat() {
 
   const retrieveMessages = async (decryptedGroupIdString, decryptedUserIdString) => {
     try {
-      const response = await axios.post("http://localhost:5000/retrieveChatMessagesInOrder", {
+      const response = await axios.post("http://localhost:8080/retrieveChatMessagesInOrder", {
         userId: decryptedUserIdString,
         groupId: decryptedGroupIdString,
       });
@@ -115,7 +115,7 @@ export default function Chat() {
   };
 
   const sendText = async() => {
-    const response = await axios.post("http://localhost:5000/newMessage", {
+    const response = await axios.post("http://localhost:8080/newMessage", {
       newMessage:message,
       targetChatId: decryptedGroupId,
       }, { withCredentials: true }); 
@@ -138,7 +138,7 @@ export default function Chat() {
 
   // const translateText = async () => {
   //   try {
-  //     const response = await axios.post("http://localhost:5000/api/translate", { text: message });
+  //     const response = await axios.post("http://localhost:8080/api/translate", { text: message });
   //     console.log(response.data.translatedText);
   //     setResponseMessage(response.data.translatedText);
   //   } catch (error) {

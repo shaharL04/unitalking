@@ -18,37 +18,74 @@ const encrypt = (text) => {
 
 const ChatsList = () => {
   const [chats, setChats] = useState([]);
+  const [newChatWasCreated,setNewChatWasCreated] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
   const [chatsForAutoComplete, setChatsForAutoComplete] = useState([]);
   const [opened, { open, close }] = useDisclosure(false);
+  const [newChatData, setNewChatData] = useState({
+    groupName: '',
+    groupImage: null,
+    selectedMembers: []
+  });
   const router = useRouter();
 
   //retrieve user chats
-  useEffect(() => {
-    
-    const retrieveAllChatsTheUserHasByTimeOrder = async () => {
-      try {
-        const response = await axios.post("http://localhost:5000/retrieveAllChatsTheUserHasByTimeOrder",{test: "test"},{withCredentials: true}); 
-        console.log("chatList"+JSON.stringify(response.data.sortedChats))
-        setChats(response.data.sortedChats);
-        createChatsNamesArr(response.data.sortedChats);
-      } catch (error) {
-        console.error("Error fetching chat messages:", error);
-      }
-    };
-    retrieveAllChatsTheUserHasByTimeOrder();
-  }, []);
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const retrieveAllChatsTheUserHasByTimeOrder = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/retrieveAllChatsTheUserHasByTimeOrder",{test: "test"},{withCredentials: true}); 
+      console.log("chatList"+JSON.stringify(response.data.sortedChats))
+      setChats(response.data.sortedChats);
+      createChatsNamesArr(response.data.sortedChats);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
     }
   };
+  
+  useEffect(() => {
+    retrieveAllChatsTheUserHasByTimeOrder();
+  }, [newChatWasCreated]);
+
+
+  // create new chat useEffect - START
+  useEffect(() =>{
+    if(newChatData.groupImage != null && newChatData.groupName && newChatData.selectedMembers.length > 0) {
+
+      const createNewChat = async () => {
+        try {
+
+          const formData = new FormData();
+      
+
+          formData.append('groupName', newChatData.groupName);
+          formData.append('groupMembersArr', JSON.stringify(newChatData.selectedMembers)); 
+          formData.append('groupImage', newChatData.groupImage);
+      
+          const response = await axios.post("http://localhost:8080/createNewChat", formData, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'multipart/form-data' 
+            }
+          });
+          setNewChatWasCreated(true);
+          console.log('Response:', response.data);
+        } catch (error) {
+          console.error("Error creating new chat:", error);
+        }
+      };
+      
+
+      createNewChat();
+    }
+  },[newChatData])
+
+
+  const handleNewChatData = (data) => {
+    setNewChatData(data);
+    console.log("Received Chat Data:", data);
+  };
+  // create new chat useEffect - END
+
+
 
 
   const createChatsNamesArr = (chats) => {
@@ -59,7 +96,7 @@ const ChatsList = () => {
 
   
   const chatItemSelected = async (chat) =>{
-    const response = await axios.post("http://localhost:5000/getChatUsers",{currentLoggedUser: chat.user_id, chatID: chat.chat_id})
+    const response = await axios.post("http://localhost:8080/getChatUsers",{currentLoggedUser: chat.user_id, chatID: chat.chat_id})
     const userIdsArr = response.data.usersInChats.map((user) => user.user_id);
     console.log("usersInChat"+userIdsArr)
 
@@ -83,7 +120,7 @@ const ChatsList = () => {
           />
           <div className='modalChatDiv'>
             <Modal opened={opened} onClose={close} title="New Chat" centered className='modalChat'>
-              <AddChat />
+              <AddChat newChatHandler={handleNewChatData} />
             </Modal>
           </div>
       </div>

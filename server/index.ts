@@ -9,6 +9,7 @@ import validateAuthToken from './utils/validateAuthToken';
 import path from 'path';
 import WebSocket from 'ws';
 import { IncomingMessage } from 'http';
+import { connectRedis } from './config/redisClient';
 
 const app = express();
 const port = Number(process.env.PORT) || 8080;
@@ -21,6 +22,8 @@ app.use('/', router);
 
 const staticFilesPath = path.join(__dirname, '..', 'photos', 'chatPhotos');
 app.use('/chatPhotos', express.static(staticFilesPath));
+
+
 
 // WebSocket START
 
@@ -103,6 +106,12 @@ wss.on('error', (error) => {
 
 // WebSocket END
 
-app.listen(port, () => {
-  console.log(`${staticFilesPath} Server is running on port ${port}`);
-});
+async function startServer() {
+  await connectRedis(); 
+
+  app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+  });
+}
+
+startServer();

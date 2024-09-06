@@ -8,7 +8,11 @@ class messageController{
         try {
         const userMessages = await messageService.retrieveMessagesSentByUser(userId, groupId);
         const contactMessages = await messageService.retrieveMessagesSentByGroupUsers(userId, groupId );
-        const SortedMessages = await messageService.sortAllMessagesByTimeOrder(userMessages,contactMessages)
+        const mixedMessagesArr = [...userMessages, ...contactMessages]
+        const translatedMessagesArr = await messageService.batchTranslateMessages(mixedMessagesArr, "en");
+        console.log("this is the translated messages array   "+JSON.stringify(translatedMessagesArr))
+        const SortedMessages = await messageService.sortMessagesByTimeOrder(translatedMessagesArr);
+        console.log("this is sorted messages:"+JSON.stringify(SortedMessages) );
         res.status(200).json({ SortedMessagesArr: SortedMessages});
         
         } catch (error) {
@@ -37,6 +41,7 @@ class messageController{
         res.status(500).json({ message: 'An error occurred while sending the request.' });
         }
     }
+
 }
 
 export default new messageController();

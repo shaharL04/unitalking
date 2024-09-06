@@ -18,6 +18,8 @@ router.post('/getAllUsers', userController.getAllUsers);
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);
 router.post('/newMessage', messageController.newMessage);
 
+//Translation Routes -MAYBE
+
 
 //Chat routers
 router.post('/retrieveAllChatsTheUserHasByTimeOrder', chatController.retrieveAllChatsTheUserHasByTimeOrder);

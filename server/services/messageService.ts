@@ -93,12 +93,30 @@ class messageService {
                         'source': 'auto', 
                         'target': targetLanguage,
                     });
-                    const translatedText = response.data.translatedText;
-    
+                    
+                    
+                    //if there is an error in the target language and it cant be translated then change it to english and then try again
+                    let translatedText;
+                    if(response.data.error){
+
+                        const englishResponse = await axios.post('http://127.0.0.1:5000/translate', {
+                            'q': message.content,
+                            'source': 'auto', 
+                            'target': 'en',
+                        });
+                        const responseToPreferdLang = await axios.post('http://127.0.0.1:5000/translate', {
+                            'q': englishResponse.data.translatedText,
+                            'source': 'en', 
+                            'target': targetLanguage,
+                        });
+                        translatedText = responseToPreferdLang.data.translatedText;
+                    }
+                    else{
+                        translatedText = response.data.translatedText;
+                    }
                     // Update the message content and cache it in Redis
                     const translatedMessage = { ...message, content: translatedText };
                     await redisClient.setEx(`translated_message:${message.id}:${targetLanguage}`, 86400, translatedText); // Cache the translation
-    
                     return translatedMessage;
                 } catch (error) {
                     console.error('Error translating message:', error);

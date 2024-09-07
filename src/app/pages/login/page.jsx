@@ -2,7 +2,9 @@
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useRouter } from 'next/navigation';
 import { useForm } from '@mantine/form';
+import SearchBox from '@/src/components/searchBox/SearchBox';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import {
   TextInput,
   PasswordInput,
@@ -15,10 +17,12 @@ import {
   Checkbox,
   Anchor,
   Stack,
+  Select
 } from '@mantine/core';
 
 export default function Login() {
   const [type, toggle] = useToggle(['login', 'register']);
+  const [langArr, setLangArr] = useState([])
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -34,11 +38,29 @@ export default function Login() {
     },
   });
 
+
+
+  useEffect(() => {
+    async function fetchTranslationLangs() {
+      try {
+        const response = await axios.get("http://localhost:8080/getTranslationLangs");
+        const modifiedData = response.data.map(({ targets, ...rest }) => rest);
+        setLangArr(modifiedData);
+        console.log(modifiedData);
+      } catch (error) {
+        console.error('Error fetching translation languages:', error);
+      }
+    }
+
+    fetchTranslationLangs();
+  }, []);
+
   function handleFormSubmit(values){
+    console.log(values)
     if(type =="login"){
       checkIfUserExist(values.email, values.password);
     }else{
-      createNewUser(values.name,values.email, values.password)
+      createNewUser(values.name,values.email, values.password, values.langCode)
     }
   }
 
@@ -47,8 +69,8 @@ export default function Login() {
     router.push('/pages/chatsList')
   }
 
-  async function createNewUser(name, email,password){
-    const response = await axios.post("http://localhost:8080/createUserInDB",{name:name , email:email , password: password} )
+  async function createNewUser(name, email,password,langCode){
+    const response = await axios.post("http://localhost:8080/createUserInDB",{name:name , email:email , password: password, langCode: langCode} )
   }
 
   return (
@@ -60,6 +82,7 @@ export default function Login() {
       <form onSubmit={form.onSubmit(handleFormSubmit)}>
         <Stack>
           {type === 'register' && (
+            <div className='apearOnlyOnReg'>
             <TextInput
               required
               label="Name"
@@ -68,6 +91,13 @@ export default function Login() {
               onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
               radius="md"
             />
+            <Select 
+              label="Select a language"
+              placeholder="Pick a language"
+              data={langArr.map((lang) => ({ value: lang.code, label: lang.name }))}
+              onChange={(value) => form.setFieldValue('langCode', value)}
+            />
+           </div>
           )}
 
           <TextInput

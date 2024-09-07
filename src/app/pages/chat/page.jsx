@@ -119,8 +119,13 @@ export default function Chat() {
       newMessage:message,
       targetChatId: decryptedGroupId,
       }, { withCredentials: true }); 
-      console.log("response after inserting new M"+JSON.stringify(response.data.message))
-      setSortedMessagesArray(prevMessages => [...prevMessages, response.data.message]);
+
+      const translatedResponse = await axios.post("http://localhost:8080/translateNewMessage", {
+        newMessageForTranslate:response.data.message,
+        }, { withCredentials: true });
+
+      console.log("response after inserting new M"+JSON.stringify(translatedResponse.data))
+      setSortedMessagesArray(prevMessages => [...prevMessages, translatedResponse.data.message]);
 
     if (socket) {
       const targetChatUserIdArr = decryptedUsersInGroupArr; 
@@ -134,24 +139,7 @@ export default function Chat() {
 
     setMessage('');
   }
-  // LATER DEVELOPMENT OF TEXT BEING TRANSLATED - STARTED
 
-  // const translateText = async () => {
-  //   try {
-  //     const response = await axios.post("http://localhost:8080/api/translate", { text: message });
-  //     console.log(response.data.translatedText);
-  //     setResponseMessage(response.data.translatedText);
-  //   } catch (error) {
-  //     console.error('Error sending request:', error);
-  //     setResponseMessage('An error occurred while sending the request.');
-  //   }
-  // };
-
-  // const handleMicrophoneClick = () => {
-  //   console.log('Microphone clicked');
-  // };
-
-  // LATER DEVELOPMENT OF TEXT BEING TRANSLATED - END
 
 
   return (

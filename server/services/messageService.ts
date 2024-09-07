@@ -2,6 +2,7 @@ import { pool } from '../config/dbConfig';
 import { Message } from '../types/message';
 import { redisClient } from '../config/redisClient';
 import axios from 'axios';
+import userService from './userService';
 
 class messageService {
 
@@ -64,6 +65,46 @@ class messageService {
         } catch (error) {
             console.error('Error executing query:', error);
             throw error;
+        }
+    }
+
+    async translateNewMessage(userId: string ,message: Message){
+        try {
+            const userLangCode = await userService.getUserLangCode(userId);
+            const response = await axios.post('http://127.0.0.1:5000/translate', {
+                'q': message.content,
+                'source': 'auto', 
+                'target': userLangCode,
+            });
+            
+            
+            //if there is an error in the target language and it cant be translated then change it to english and then try again
+            let translatedText;
+            if(response.data.error){
+
+                const englishResponse = await axios.post('http://127.0.0.1:5000/translate', {
+                    'q': message.content,
+                    'source': 'auto', 
+                    'target': 'en',
+                });
+                const responseToPreferdLang = await axios.post('http://127.0.0.1:5000/translate', {
+                    'q': englishResponse.data.translatedText,
+                    'source': 'en', 
+                    'target': userLangCode,
+                });
+                translatedText = responseToPreferdLang.data.translatedText;
+            }
+            else{
+                translatedText = response.data.translatedText;
+            }
+            // Update the message content and cache it in Redis
+            const translatedMessage = { ...message, content: translatedText };
+            await redisClient.setEx(`translated_message:${message.id}:${userLangCode}`, 86400, translatedText); // Cache the translation
+            console.log("this is the translated message that was recieved: "+  JSON.stringify(translatedMessage))
+            return translatedMessage;
+        } catch (error) {
+            console.error('Error translating message:', error);
+            return message; // Fall back to the original message if translation fails
         }
     }
 

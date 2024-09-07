@@ -10,6 +10,7 @@ import path from 'path';
 import WebSocket from 'ws';
 import { IncomingMessage } from 'http';
 import { connectRedis } from './config/redisClient';
+import messageService from './services/messageService';
 
 const app = express();
 const port = Number(process.env.PORT) || 8080;
@@ -75,9 +76,11 @@ wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     });
     
     // Helper function to send a message to a single user
-    function sendToUser(targetUserId: string, data: any) {
+    async function sendToUser(targetUserId: string, data: any) {
+      console.log("this is the data send to user: "+ JSON.stringify(data))
+      const translatedData = await messageService.translateNewMessage(targetUserId, data)
       if (userConnections[targetUserId]) {
-        userConnections[targetUserId].forEach(conn => conn.send(JSON.stringify(data)));
+        userConnections[targetUserId].forEach(conn => conn.send(JSON.stringify(translatedData)));
         console.log(`Message sent to user ${targetUserId}`);
       } else {
         console.log(`User ${targetUserId} not connected`);

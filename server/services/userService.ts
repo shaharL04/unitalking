@@ -23,10 +23,10 @@ class userService {
     }
   }
 
-  async createUser(name: string, email: string, password: string): Promise<any> {
+  async createUser(name: string, email: string, password: string, langCode:string): Promise<any> {
     const hashedPassword: string = await hashPassword(password);
-    const query = 'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *';
-    const result = await pool.query(query, [name, email, hashedPassword]);
+    const query = 'INSERT INTO users (username, email, password_hash, lang_code) VALUES ($1, $2, $3, $4) RETURNING *';
+    const result = await pool.query(query, [name, email, hashedPassword, langCode]);
     return result.rows[0];
   }
 
@@ -40,6 +40,14 @@ class userService {
     const result = await pool.query(query, [userId]);
     console.log("ALL users results"+JSON.stringify(result.rows));
     return result
+  }
+
+  async getUserLangCode(userId: string): Promise<string>{
+    console.log("user Lang code ");
+    const query = 'SELECT lang_code FROM users WHERE id = $1'
+    const result = await pool.query(query, [userId]);
+    console.log("user Lang code "+JSON.stringify(result.rows));
+    return result.rows[0].lang_code
   }
 }
 

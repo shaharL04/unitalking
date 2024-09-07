@@ -85,13 +85,12 @@ class messageService {
             }
         }
     
-        // Perform translation if needed
         if (messagesToTranslate.length > 0) {
             const translationPromises = messagesToTranslate.map(async (message) => {
                 try {
                     const response = await axios.post('http://127.0.0.1:5000/translate', {
                         'q': message.content,
-                        'source': 'auto', // Auto-detect source language
+                        'source': 'auto', 
                         'target': targetLanguage,
                     });
                     const translatedText = response.data.translatedText;

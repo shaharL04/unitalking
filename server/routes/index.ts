@@ -17,8 +17,7 @@ router.post('/getAllUsers', userController.getAllUsers);
 //Messages routers
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);
 router.post('/newMessage', messageController.newMessage);
-
-//Translation Routes -MAYBE
+router.get("/getTranslationLangs", messageController.getTranslationLangs)
 
 
 //Chat routers

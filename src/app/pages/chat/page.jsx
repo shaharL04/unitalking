@@ -2,14 +2,12 @@
 import { useState, useEffect,useLayoutEffect } from "react";
 import MyCreatedMessages from "@/src/components/MyCreatedMessages";
 import OthersCreatedMessages from "@/src/components/OthersCreatedMessages";
-import Microphone from "@/src/components/Microphone";
-import SendBtn from "@/src/components/sendBtn";
+import SendBtn from "@/src/components/sendBtn/sendBtn";
 import "@/src/app/daisui.css";
 import "./chat.css";
 import axios from 'axios'; 
-import { useRouter } from 'next/navigation';
+import Header from "@/src/components/header/Header";
 import CryptoJS from 'crypto-js';
-import { closeOnEscape } from "@mantine/core";
 
 
 const SECRET_KEY = 'your-secret-key'; 
@@ -23,7 +21,7 @@ const decrypt = (encryptedText) => {
 
 export default function Chat() { 
   const [message, setMessage] = useState('');
-  const [hasInput, setHasInput] = useState(false);
+  const [chatObject, setChatObject] = useState({})
   const [sortedMessagesArray, setSortedMessagesArray] = useState([]);
   const [socket, setSocket] = useState(null);
   const [decryptedGroupId, setDecryptedGroupId] = useState(null);
@@ -49,6 +47,7 @@ export default function Chat() {
           setDecryptedUsersInGroupArr(usersInGroupArray)
           setDecryptedUserId(decryptedUserIdString);
 
+          await getChatInfo(decryptedGroupIdString)
           await retrieveMessages(decryptedGroupIdString, decryptedUserIdString);
         } catch (error) {
           console.error("Error decrypting user IDs:", error);
@@ -58,6 +57,21 @@ export default function Chat() {
 
     retrieveValuesFromUrl();
   }, []); 
+
+  const getChatInfo = async (groupId) =>{
+    try{
+      const response = await axios.post("http://localhost:8080/getChatInfoByChatId", {
+        groupId: groupId,
+      });
+      console.log("this is chat Info: "+ JSON.stringify(response.data.chatObject.name))
+      setChatObject({
+        chatName: response.data.chatObject.name,
+        chatImage: response.data.chatObject.group_photo[0].pathToPhoto
+      })
+    }catch(error){
+      console.log("error getting chat info: "+ error)
+    }
+  }
 
   const retrieveMessages = async (decryptedGroupIdString, decryptedUserIdString) => {
     try {
@@ -111,7 +125,7 @@ export default function Chat() {
 
   const handleTextAreaChange = (event) => {
     setMessage(event.target.value);
-    setHasInput(event.target.value !== '');
+
   };
 
   const sendText = async() => {
@@ -144,41 +158,30 @@ export default function Chat() {
 
   return (
     <div className="App">
-      <div className="messagesDiv">
-      {
-        sortedMessagesArray.map((item, index) => {
+      <Header type='cList' chatObject={chatObject} />
+      <div className="specificChatDiv">
+        <div className="messagesDiv">
+        {
+          sortedMessagesArray.map((item, index) => {
 
-          return item.sender_id == decryptedUserId ? (
-            <MyCreatedMessages key={index} message={item.content} />
-          ) : (
-            <OthersCreatedMessages key={index} message={item.content} />
-          );
-
-        })
-      }
-      </div>
-      <div className="MessagesInput"> 
-        <textarea 
-          className="textarea textarea-bordered textAreaInput"
-          value={message}
-          onChange={handleTextAreaChange} 
-        /> 
-
-        <div className="svg-wrapper-container">
-          <div className={`svg-wrapper `}>
-
-            {hasInput ? (
-              <SendBtn 
-              onClick={sendText}
-               />
+            return item.sender_id == decryptedUserId ? (
+              <MyCreatedMessages key={index} message={item.content} />
             ) : (
-              <Microphone 
+              <OthersCreatedMessages key={index} message={item.content} />
+            );
 
-               />
-            )}
-          </div>
+          })
+        }
         </div>
+        <div className="MessagesInput"> 
+          <textarea 
+            className="textAreaInput"
+            value={message}
+            onChange={handleTextAreaChange} 
+          /> 
+          <SendBtn onClick={sendText}/>
 
+        </div>
       </div>
     </div>
   );

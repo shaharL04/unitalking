@@ -8,6 +8,8 @@ import axios from 'axios';
 import './chatsList.css'
 import '@/src/app/daisui.css'
 import { useRouter } from 'next/navigation';
+import Header from '@/src/components/header/Header';
+import Footer from '@/src/components/footer/Footer';
 import CryptoJS from 'crypto-js';
 
 const SECRET_KEY = 'your-secret-key'; 
@@ -108,22 +110,8 @@ const ChatsList = () => {
   };
 
   return (
-    <div >
-      <div className='addNewChatDiv'>
-          <img
-            src='/open.svg'
-            alt="Open Icon"
-            className="swap-off fill-current"
-            width="32"
-            height="32"
-            onClick={open}
-          />
-          <div className='modalChatDiv'>
-            <Modal opened={opened} onClose={close} title="New Chat" centered className='modalChat'>
-              <AddChat newChatHandler={handleNewChatData} />
-            </Modal>
-          </div>
-      </div>
+    <div className='chatsListPageDiv'>
+      <Header/>
       <div className='chatListDiv'>
         {chats.map((chat) => (
             <div className='indevidualChatDiv'>
@@ -135,6 +123,14 @@ const ChatsList = () => {
             </div>
         ))}
       </div>
+      <div className='addNewChatDiv'>
+          <div className='modalChatDiv'>
+            <Modal opened={opened} onClose={close} title="New Chat" centered className='modalChat'>
+              <AddChat newChatHandler={handleNewChatData} />
+            </Modal>
+          </div>
+      </div>
+      <Footer onClickFunc = {open}/>
     </div>
   );
 };

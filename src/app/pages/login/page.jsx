@@ -19,7 +19,7 @@ import {
   Stack,
   Select
 } from '@mantine/core';
-
+import './login.css'
 export default function Login() {
   const [type, toggle] = useToggle(['login', 'register']);
   const [langArr, setLangArr] = useState([])
@@ -74,9 +74,10 @@ export default function Login() {
   }
 
   return (
-    <Paper radius="md" p="xl" withBorder >
+    <div className='loginPageDiv'>
+    <Paper radius="md" p="xl" withBorder className='customMantinePaper'>
       <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        Welcome to Unitalking, {type} with
       </Text>
 
       <form onSubmit={form.onSubmit(handleFormSubmit)}>
@@ -129,17 +130,18 @@ export default function Login() {
           )}
         </Stack>
 
-        <Group justify="space-between" mt="xl">
+        <Group justify="space-between" mt="xl" className='groupCustom'>
           <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
             {type === 'register'
               ? 'Already have an account? Login'
               : "Don't have an account? Register"}
           </Anchor>
-          <Button type="submit" radius="xl">
+          <Button type="submit" radius="xl" className='customMantineBtn'>
             {upperFirst(type)}
           </Button>
         </Group>
       </form>
     </Paper>
+    </div>
   );
 }

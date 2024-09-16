@@ -1,0 +1,38 @@
+body {
+    background: linear-gradient(135deg, #7B42F6, #89CFF0);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+
+.groupCustom{
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.customMantineBtn{
+    width: 80%;
+    background: linear-gradient(135deg, #6A0DAD, #4169E1);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.customMantineBtn:hover{
+    background: linear-gradient(135deg, #5B0E8A, #354C9F);
+    transform: scale(1.05);
+}
+
+.loginPageDiv {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+  }

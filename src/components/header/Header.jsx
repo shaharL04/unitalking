@@ -9,14 +9,19 @@ const Header = ({type, chatObject}) =>{
     }
     if (type === 'cList') {
         headerContent = <div className='specificChatHeaderDiv'>
-                           <div className="circular-image-container">
-                                 <img src={`http://localhost:8080/chatPhotos/${chatObject.chatImage}`} alt="Profile Image" className="circular-image" />
+                            <div className='chatNameNPhoto'>
+                                    <div className="circular-image-container">
+                                        <img src={`http://localhost:8080/chatPhotos/${chatObject.chatImage}`} alt="Profile Image" className="circular-image" />
+                                    </div>
+                                    <div className="chatName">{chatObject.chatName}</div>
                             </div>
-                            <div className="chatName">{chatObject.chatName}</div>
-                            <div className="returnButton circular-image-container-rtn-btn"> 
-                                <button onClick={handleClick}>
-                                    <img src="/returnBtn.svg" alt="Plus icon" className="" /> 
-                                </button>
+
+                            <div className='returnBtnDiv'>
+                                <div className="returnButton circular-image-container-rtn-btn"> 
+                                    <button onClick={handleClick}>
+                                        <img src="/returnBtn.svg" alt="Plus icon" className="" /> 
+                                    </button>
+                                </div>
                             </div>
                         </div>;
     } else {

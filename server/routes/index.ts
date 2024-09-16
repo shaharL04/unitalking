@@ -25,6 +25,7 @@ router.get("/getTranslationLangs", messageController.getTranslationLangs)
 router.post('/retrieveAllChatsTheUserHasByTimeOrder', chatController.retrieveAllChatsTheUserHasByTimeOrder);
 router.post('/createNewChat', uploadChatPhoto.single('groupImage'), chatController.createNewChat);
 router.post('/getChatUsers', chatController.getChatUsers);
+router.post('/getChatInfoByChatId', chatController.getChatInfoByChatId)
 
 //Translate routers
 //router.post('/api/translate', UserController.createUser);

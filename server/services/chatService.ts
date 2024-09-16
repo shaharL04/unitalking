@@ -3,6 +3,7 @@ import { pool } from '../config/dbConfig';
 import { sumUser } from '../types/sumUser';
 import { User } from '../types/user';
 import findPhotosByUnique from '../utils/findPhotoByUnique';
+import { log } from 'console';
 
 class chatService{
     async retrieveAllChatsTheUserHasByTimeOrder (userId: string) {
@@ -78,6 +79,20 @@ class chatService{
           const result = await pool.query(query, [chat_id, userIdToInsert]);
         }) 
         const result = await pool.query(query, [chat_id, currentLoggedUser]);
+      } catch (error) {
+        console.error('Error executing query:', error);
+        throw error;
+      }
+    }
+
+    async getChatInfoByChatId(chat_id: string){
+      const query = `SELECT name, group_photo from chats WHERE id = $1`
+      try {
+        const result = await pool.query(query, [chat_id]);
+        console.log("Chat Info By Chat Id "+JSON.stringify(result.rows[0]))
+        const chatObject  = [ { chatId: chat_id, uniqueToMatchInFolder: result.rows[0].group_photo} ]
+        result.rows[0].group_photo = findPhotosByUnique(chatObject)
+        return result.rows[0]
       } catch (error) {
         console.error('Error executing query:', error);
         throw error;

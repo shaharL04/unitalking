@@ -57,6 +57,17 @@ class chatController{
             res.status(500).json({ message: 'An error occurred while sending the request.' });
         }
     }
+
+    async getChatInfoByChatId(req: Request, res: Response){
+        const {groupId} = req.body;
+        try{
+            const chatObject = await chatService.getChatInfoByChatId(groupId)
+            res.status(200).json({chatObject: chatObject})
+        }catch(error){
+            console.error('Error sending request:', error);
+            res.status(500).json({ message: 'An error occurred while sending the request.' });
+        }
+    }
 }
 
 export default new chatController();

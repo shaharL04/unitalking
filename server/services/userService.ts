@@ -75,6 +75,13 @@ class userService {
     console.log(JSON.stringify(result.rows));
     return result
   }
+
+  async updateUserData(name: string, email: string, phoneNumber: string, dateOfBirth: string, userId: string){
+    const query = 'UPDATE users SET username = $1, email = $2, phone_number = $3, date_of_birth = $4  WHERE id = $5'
+    const result = await pool.query(query, [name ,email ,phoneNumber, dateOfBirth, userId]);
+    console.log(JSON.stringify("this updateUserData"+result.rows));
+    return result
+  }
 }
 
 export default new userService();

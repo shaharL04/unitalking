@@ -16,6 +16,7 @@ router.post('/createUserInDB', userController.createUser);
 router.post('/getAllUsers', userController.getAllUsers);
 router.post('/updateUserPassword', userController.updateUserPassword);
 router.post('/updatePreferedLang', userController.updatePreferedLang);
+router.post('/updateUserData', userController.updateUserData)
 
 //Messages routers
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);

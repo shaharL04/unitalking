@@ -54,8 +54,8 @@ class userController{
         }
     
       async createUser(req: Request, res: Response) {
-        const { name, email, password, langCode } = req.body;
         try {
+          const { name, email, password, langCode } = req.body;
           const newUser = await userService.createUser(name, email, password,langCode);
           res.status(201).json(newUser);
         } catch (error) {
@@ -106,6 +106,22 @@ class userController{
           const userLangCode = req.body.langCode
           const userUpdatedLangStatus = await userService.updateUserLang(userId, userLangCode)
           res.status(201).json(userUpdatedLangStatus);
+        }catch(error){
+          console.log('error getting all users:', error);
+          res.status(500).json({message: 'An error occurred while getting all users.'})
+        }
+      }
+
+      async updateUserData(req:Request, res:Response){
+        const authToken = req.cookies.authToken
+        const userId: string | null = validateAuthToken(authToken);
+        if (userId === null) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+        }  
+        try{
+          const { name, email, phoneNumber, dateOfBirth } = req.body.newUserData;
+          const updateUserDataStatus = await userService.updateUserData(name, email, phoneNumber, dateOfBirth, userId)
+          res.status(201).json(updateUserDataStatus);
         }catch(error){
           console.log('error getting all users:', error);
           res.status(500).json({message: 'An error occurred while getting all users.'})

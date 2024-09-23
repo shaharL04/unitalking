@@ -36,6 +36,22 @@ class userController{
           res.status(500).json({ message: 'An error occurred while checking user existence.' });
         }
       }
+
+      async getUserInfo(req: Request, res: Response) {
+        const authToken = req.cookies.authToken
+        console.log(authToken)
+        const userId: string | null = validateAuthToken(authToken);
+          if (userId === null) {
+              return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+          }  
+          try{
+            const userInfo = await userService.getUserInfoByUserID(userId)
+            res.status(201).json(userInfo);
+          }catch(error){
+            console.log('error getting all users:', error);
+            res.status(500).json({message: 'An error occurred while getting all users.'})
+          }
+        }
     
       async createUser(req: Request, res: Response) {
         const { name, email, password, langCode } = req.body;
@@ -58,6 +74,38 @@ class userController{
         try{
           const allUsers = await userService.getAllUsers(userId)
           res.status(201).json(allUsers);
+        }catch(error){
+          console.log('error getting all users:', error);
+          res.status(500).json({message: 'An error occurred while getting all users.'})
+        }
+      }
+
+      async updateUserPassword(req:Request, res:Response){
+        const authToken = req.cookies.authToken
+        const userId: string | null = validateAuthToken(authToken);
+        if (userId === null) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+        }  
+        try{
+          const userPassword = req.body.newPassword
+          const userUpdatedPasswordStatus = await userService.updateUserPassword(userId,userPassword)
+          res.status(201).json(userUpdatedPasswordStatus);
+        }catch(error){
+          console.log('error getting all users:', error);
+          res.status(500).json({message: 'An error occurred while getting all users.'})
+        }
+      }
+
+      async updatePreferedLang(req:Request, res:Response){
+        const authToken = req.cookies.authToken
+        const userId: string | null = validateAuthToken(authToken);
+        if (userId === null) {
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+        }  
+        try{
+          const userLangCode = req.body.langCode
+          const userUpdatedLangStatus = await userService.updateUserLang(userId, userLangCode)
+          res.status(201).json(userUpdatedLangStatus);
         }catch(error){
           console.log('error getting all users:', error);
           res.status(500).json({message: 'An error occurred while getting all users.'})

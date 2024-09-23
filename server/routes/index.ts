@@ -11,8 +11,11 @@ const uploadChatPhoto = multer({ storage: multerStorage });
 
 //user routers
 router.post('/checkIfUserExistInDB', userController.checkIfUserExists);
+router.post('/getUserInfo', userController.getUserInfo);
 router.post('/createUserInDB', userController.createUser);
 router.post('/getAllUsers', userController.getAllUsers);
+router.post('/updateUserPassword', userController.updateUserPassword);
+router.post('/updatePreferedLang', userController.updatePreferedLang);
 
 //Messages routers
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);

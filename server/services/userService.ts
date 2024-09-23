@@ -23,6 +23,17 @@ class userService {
     }
   }
 
+  async getUserInfoByUserID(userId: string): Promise<User | null> {
+    const query = 'SELECT * FROM users WHERE id = $1';
+    try {
+      const result = await pool.query(query, [userId]);  
+      return result.rows[0]; 
+    } catch (error) {
+      console.error('Error checking user in database:', error);
+      throw error; 
+    }
+  }
+
   async createUser(name: string, email: string, password: string, langCode:string): Promise<any> {
     const hashedPassword: string = await hashPassword(password);
     const query = 'INSERT INTO users (username, email, password_hash, lang_code) VALUES ($1, $2, $3, $4) RETURNING *';
@@ -48,6 +59,21 @@ class userService {
     const result = await pool.query(query, [userId]);
     console.log("user Lang code "+JSON.stringify(result.rows));
     return result.rows[0].lang_code
+  }
+
+  async updateUserPassword(userId: string,userNewPassword: string ){
+    const hashedPassword: string = await hashPassword(userNewPassword);
+    const query = 'UPDATE users SET password_hash = $1 WHERE id = $2'
+    const result = await pool.query(query, [userNewPassword,userId]);
+    console.log(JSON.stringify(result.rows));
+    return result
+  }
+
+  async updateUserLang(userId: string,userNewLang: string ){
+    const query = 'UPDATE users SET lang_code = $1 WHERE id = $2'
+    const result = await pool.query(query, [userNewLang,userId]);
+    console.log(JSON.stringify(result.rows));
+    return result
   }
 }
 

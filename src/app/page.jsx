@@ -1,32 +1,62 @@
-'use client'
-import Image from "next/image";
-import { useState } from "react";
-import axios from 'axios'
-import './globals.css'
-export default function Home() {
-    const [inputText, setInputText] = useState('');
-    const [responseMessage, setResponseMessage] = useState('');
+import React from 'react';
+import './homePage.css'; // Your enhanced styles
 
-    async function simpleTranslate(){
-      try{
-        const response = await axios.post("http://localhost:8080/api/translate", {text: inputText});
-        console.log(response.data.translatedText);
-        setResponseMessage(response.data.translatedText);
-      } catch (error) {
-        console.error('Error sending request:', error);
-        setResponseMessage('An error occurred while sending the request.');
-      }
-    }
-    return (
-      <div>
-        <p>let's test this translate!</p>
-        <input
-          placeholder="Text you want to translate"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-        <br/>
-        <button onClick={simpleTranslate}>PUSH ME TO TRANSLATE!</button>
-      </div>
-    );
-}
+const HomePage = () => {
+  return (
+    <div className="homepage-container">
+      {/* Header Section */}
+      <header className="header">
+        <div className="logo">
+          <h1 className="unitalking-title">Unitalking</h1>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-content">
+          <h2>Connecting the World through Conversations</h2>
+          <p>Chat, translate, and meet new people across the globe in a language you understand.</p>
+          <a href="/pages/login" className="cta-button hero-button">Join Unitalking Now</a>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features" id="features">
+        <h2>Why Unitalking?</h2>
+        <div className="feature-list">
+          <div className="feature-item">
+            <h3>Live Chatting</h3>
+            <p>Engage in real-time conversations with friends and strangers alike.</p>
+          </div>
+          <div className="feature-item">
+            <h3>Message Translation</h3>
+            <p>Automatically translate messages into the language of your choice for seamless communication.</p>
+          </div>
+          <div className="feature-item">
+            <h3>Create Groups & Chats</h3>
+            <p>Build your own groups, add users, and meet new people in a single click.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="cta-section">
+        <h2>Ready to start your global conversations?</h2>
+        <a href="/pages/login" className="cta-button">Sign Up for Free</a>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <p>© 2024 Unitalking. All Rights Reserved.</p>
+          <ul>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default HomePage;

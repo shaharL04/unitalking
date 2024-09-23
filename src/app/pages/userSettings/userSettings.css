@@ -73,8 +73,13 @@ html, body {
   margin: 0;
 }
 
-
 .arrow-icon {
   color: #6c63ff; 
   font-size: 18px;
+}
+
+.mantineContainer{
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 55px;
 }

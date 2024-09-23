@@ -1,8 +1,6 @@
-// UserSettings.jsx
-
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { Modal, Button } from '@mantine/core';
 import axios from 'axios';
 import './UserSettings.css'; // Your CSS for styles
@@ -25,7 +23,7 @@ const UserSettings = () => {
   const [loggedUserData, setLoggedUserData] = useState('');
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function getUserInfo() {
       try {
         const response = await axios.post("http://localhost:8080/getUserInfo",{text: "test"}, {withCredentials: true});
@@ -95,6 +93,7 @@ const UserSettings = () => {
         opened={opened}
         onClose={() => setOpened(false)}
         centered
+        className='mantineContainer'
       >
         {modalContent}
         <Button onClick={() => setOpened(false)}>Close</Button>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './profileSettings.css'; // Your CSS for styles
 
 const ProfileSettings = ({ name, email , phoneNumber, dateOfBirth}) => {
@@ -9,10 +10,18 @@ const ProfileSettings = ({ name, email , phoneNumber, dateOfBirth}) => {
     dateOfBirth: dateOfBirth ?? ''
   });
 
-  const handleSave = () => {
-    // Save user data logic here (e.g., send to an API)
-    console.log('User data saved:', userData);
+  const handleSave = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/updateUserData", 
+        { newUserData: userData },
+        { withCredentials: true }
+      );
+      console.log('User data saved:', response.data);
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

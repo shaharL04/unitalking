@@ -20,6 +20,7 @@ import {
   Select
 } from '@mantine/core';
 import './login.css'
+
 export default function Login() {
   const [type, toggle] = useToggle(['login', 'register']);
   const [langArr, setLangArr] = useState([])

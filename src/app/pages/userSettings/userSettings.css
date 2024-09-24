@@ -1,24 +1,28 @@
 html, body {
-  margin: 0; 
-  padding: 0; 
-  width: 100%; 
-  height: 100%; 
-}
-.userSettingsDiv{
+  margin: 0;
+  padding: 0;
+  width: 100%;
   height: 100%;
+}
+
+.userSettingsDiv {
+  min-height: 100vh; /* Ensure full height */
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #7B42F6, #89CFF0);
 }
+
+
 .user-settings-container {
   padding: 24px;
   max-width: 400px;
-  margin: 0 auto;
   background-color: #fff;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 100%; /* Full width inside the flexbox parent */
+  max-width: 400px; /* Limit max width */
 }
 
 .settings-header {
@@ -78,8 +82,9 @@ html, body {
   font-size: 18px;
 }
 
-.mantineContainer{
+.mantineContainer {
+  /* Modal container adjustments */
   display: flex;
-  justify-content: flex-end;
-  margin-left: 55px;
+  justify-content: center; /* Align modal content center */
+  align-items: center;
 }

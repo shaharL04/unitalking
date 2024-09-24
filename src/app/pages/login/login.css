@@ -6,7 +6,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
-  }
+}
 
 .groupCustom{
     display: flex;
@@ -35,4 +35,49 @@ body {
     justify-content: center; 
     align-items: center; 
     height: 100vh; 
+}
+
+.rounded-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-bottom: 10px;
+  }
+  
+  .placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: #888;
+    border: 2px solid #ddd;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.textNoImageSelected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+  
+  .image-input {
+    margin-top: 10px;
+    opacity: 0;
+  }
+
+  .inputImageDiv{
+    display: flex;
+    justify-content: space-around;
   }

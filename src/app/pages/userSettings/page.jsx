@@ -4,6 +4,7 @@ import React, { useState, useLayoutEffect } from 'react';
 import { Modal, Button } from '@mantine/core';
 import axios from 'axios';
 import './UserSettings.css'; // Your CSS for styles
+import '@/src/app/globals.css'
 
 // Import Material Icons
 import LockIcon from '@mui/icons-material/Lock';
@@ -93,6 +94,7 @@ const UserSettings = () => {
         opened={opened}
         onClose={() => setOpened(false)}
         centered
+        withinPortal={true}
         className='mantineContainer'
       >
         {modalContent}

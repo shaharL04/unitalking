@@ -2,15 +2,29 @@ import multer from "multer";
 import path from "path";
 import crypto from "crypto";
 
-
-export const multerStorage = multer.diskStorage({
+// Multer storage for chat photos
+export const multerChatStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "photos/chatPhotos/"); 
+    cb(null, "photos/chatPhotos/"); // Directory for chat group photos
   },
   filename: (req, file, cb) => {
     const fileExt = path.extname(file.originalname);
     const baseName = path.basename(file.originalname, fileExt);
-    const uniqueSuffix = crypto.randomBytes(8).toString("hex"); 
+    const uniqueSuffix = crypto.randomBytes(8).toString("hex");
+    const newFileName = `${uniqueSuffix}_${baseName}${fileExt}`;
+    cb(null, newFileName);
+  },
+});
+
+// Multer storage for user profile photos
+export const multerUserStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "photos/usersPhotos/"); // Directory for user profile photos
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const baseName = path.basename(file.originalname, fileExt);
+    const uniqueSuffix = crypto.randomBytes(8).toString("hex");
     const newFileName = `${uniqueSuffix}_${baseName}${fileExt}`;
     cb(null, newFileName);
   },

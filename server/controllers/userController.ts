@@ -56,7 +56,12 @@ class userController{
       async createUser(req: Request, res: Response) {
         try {
           const { name, email, password, langCode } = req.body;
-          const newUser = await userService.createUser(name, email, password,langCode);
+        if (!req.file) {
+            return res.status(400).send("No file uploaded.");
+        }
+          const fileNameParts = req.file.filename.split('_');
+          const uniqueToSendToDB = fileNameParts[0];
+          const newUser = await userService.createUser(name, email, password,langCode,uniqueToSendToDB);
           res.status(201).json(newUser);
         } catch (error) {
           console.error('Error creating user:', error);

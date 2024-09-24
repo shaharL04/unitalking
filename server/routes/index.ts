@@ -3,16 +3,18 @@ import multer from 'multer';
 import userController from '../controllers/userController';
 import messageController from '../controllers/messageController';
 import chatController from '../controllers/chatController'
-import { multerStorage } from '../utils/handleFiles';
+import { multerChatStorage, multerUserStorage } from '../utils/handleFiles';
 
 const router: Router = Router();
 
-const uploadChatPhoto = multer({ storage: multerStorage });
+// Multer instances for different types of uploads
+const uploadChatPhoto = multer({ storage: multerChatStorage }); // For chat group images
+const uploadUserPhoto = multer({ storage: multerUserStorage }); // For user profile photos
 
 //user routers
 router.post('/checkIfUserExistInDB', userController.checkIfUserExists);
 router.post('/getUserInfo', userController.getUserInfo);
-router.post('/createUserInDB', userController.createUser);
+router.post('/createUserInDB', uploadUserPhoto.single('userPhoto'), userController.createUser);
 router.post('/getAllUsers', userController.getAllUsers);
 router.post('/updateUserPassword', userController.updateUserPassword);
 router.post('/updatePreferedLang', userController.updatePreferedLang);

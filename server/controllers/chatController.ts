@@ -9,7 +9,7 @@ class chatController{
         console.log(authToken)
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }
         try {
             console.log("reached here 22")
@@ -19,7 +19,7 @@ class chatController{
             res.status(200).json({ sortedChats: sortedChatsWithPhotoPaths});     
             } catch (error) {
             console.error('Error sending request:', error);
-            res.status(500).json({ message: 'An error occurred while sending the request.' });
+            res.status(500).json({ message: 'An error occurred while sending the request.' , type:"error"});
         }
     }
 
@@ -30,7 +30,7 @@ class chatController{
             res.status(200).json({ usersInChats: usersInChats});     
             } catch (error) {
             console.error('Error sending request:', error);
-            res.status(500).json({ message: 'An error occurred while sending the request.' });
+            res.status(500).json({ message: 'An error occurred while sending the request.' , type:"error"});
         }
     }
 
@@ -40,10 +40,10 @@ class chatController{
         const authToken = req.cookies.authToken
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token', type:"error" });
         }
         if (!req.file) {
-            return res.status(400).send("No file uploaded.");
+            return res.status(400).send({ message: 'No file was uploaded', type:"error" });
         }
         const fileNameParts = req.file.filename.split('_');
         const uniqueToSendToDB = fileNameParts[0];
@@ -54,7 +54,7 @@ class chatController{
             res.status(200).json({message: "chat was succesfully initiated"})
         }catch(error){
             console.error('Error sending request:', error);
-            res.status(500).json({ message: 'An error occurred while sending the request.' });
+            res.status(500).json({ message: 'An error occurred while sending the request.', type:"error" });
         }
     }
 
@@ -65,7 +65,7 @@ class chatController{
             res.status(200).json({chatObject: chatObject})
         }catch(error){
             console.error('Error sending request:', error);
-            res.status(500).json({ message: 'An error occurred while sending the request.' });
+            res.status(500).json({ message: 'An error occurred while sending the request.', type:"error" });
         }
     }
 }

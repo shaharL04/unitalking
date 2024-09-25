@@ -16,7 +16,6 @@ class messageController{
         let SortedMessages;
         if(userLangCode != 'NULL'){
             const translatedMessagesArr = await messageService.batchTranslateMessages(mixedMessagesArr, userLangCode);
-            console.log("this is the translated messages array   "+JSON.stringify(translatedMessagesArr))
             SortedMessages = await messageService.sortMessagesByTimeOrder(translatedMessagesArr);
         }
         SortedMessages = await messageService.sortMessagesByTimeOrder(mixedMessagesArr);
@@ -25,7 +24,7 @@ class messageController{
         
         } catch (error) {
         console.error('Error sending request:', error);
-        res.status(500).json({ message: 'An error occurred while sending the request.' });
+        res.status(500).json({ message: 'An error occurred while sending the request.', type:"error"});
         }
     }
 
@@ -35,7 +34,7 @@ class messageController{
         console.log("auth tokennnn"+authToken )
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }
 
         const incomingMessage: string = req.body.newMessage;
@@ -46,7 +45,7 @@ class messageController{
         
         } catch (error) {
         console.error('Error sending request:', error);
-        res.status(500).json({ message: 'An error occurred while sending the request.' });
+        res.status(500).json({ message: 'An error occurred while sending the request.' , type:"error"});
         }
     }
 
@@ -54,7 +53,7 @@ class messageController{
         const authToken = req.cookies.authToken
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }
         const newMessageForTranslate = req.body.newMessageForTranslate;
         try {
@@ -63,7 +62,7 @@ class messageController{
         
         } catch (error) {
         console.error('Error sending request:', error);
-        res.status(500).json({ message: 'An error occurred while sending the request.' });
+        res.status(500).json({ message: 'An error occurred while sending the request.' , type:"error"});
         }
     }
 
@@ -73,7 +72,7 @@ class messageController{
             res.json(response.data);
           } catch (error) {
             console.error('Error fetching translation languages:', error);
-            res.status(500).send('Failed to retrieve languages');
+            res.status(500).json({message: 'Failed to retrieve languages' , type:"error"});
           }
     }
 }

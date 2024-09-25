@@ -24,16 +24,16 @@ class userController{
               res.status(200).json({ message :"success" });
             }
             else{
-              res.status(400).json({ message :"wrong credentials" });
+              res.status(400).json({ message :"wrong credentials" , type:"error" });
             }
           }
           else{
-            res.status(404).json({ message :"user doesn't exist" });
+            res.status(404).json({ message :"user doesn't exist", type:"error" });
           }
           
         } catch (error) {
           console.error('Error checking user existence:', error);
-          res.status(500).json({ message: 'An error occurred while checking user existence.' });
+          res.status(500).json({ message: 'An error occurred while checking user existence.' , type:"error" });
         }
       }
 
@@ -42,14 +42,14 @@ class userController{
         console.log(authToken)
         const userId: string | null = validateAuthToken(authToken);
           if (userId === null) {
-              return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+              return res.status(401).json({ message: 'Unauthorized: please signIn' , type:"error" });
           }  
           try{
             const userInfo = await userService.getUserInfoByUserID(userId)
             res.status(201).json(userInfo);
           }catch(error){
             console.log('error getting all users:', error);
-            res.status(500).json({message: 'An error occurred while getting all users.'})
+            res.status(500).json({message: 'An error occurred while getting all users.', type:"error"})
           }
         }
     
@@ -57,7 +57,7 @@ class userController{
         try {
           const { name, email, password, langCode } = req.body;
         if (!req.file) {
-            return res.status(400).send("No file uploaded.");
+            return res.status(400).json({message: "No file uploaded.", type:"error"});
         }
           const fileNameParts = req.file.filename.split('_');
           const uniqueToSendToDB = fileNameParts[0];
@@ -65,7 +65,7 @@ class userController{
           res.status(201).json(newUser);
         } catch (error) {
           console.error('Error creating user:', error);
-          res.status(500).json({ message: 'An error occurred while creating the user.' });
+          res.status(500).json({ message: 'An error occurred while creating the user.', type:"error" });
         }
       }
 
@@ -74,14 +74,14 @@ class userController{
         console.log(authToken)
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  
         try{
           const allUsers = await userService.getAllUsers(userId)
           res.status(201).json(allUsers);
         }catch(error){
           console.log('error getting all users:', error);
-          res.status(500).json({message: 'An error occurred while getting all users.'})
+          res.status(500).json({message: 'An error occurred while getting all users.', type:"error"})
         }
       }
 
@@ -89,7 +89,7 @@ class userController{
         const authToken = req.cookies.authToken
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token', type:"error" });
         }  
         try{
           const userPassword = req.body.newPassword
@@ -97,7 +97,7 @@ class userController{
           res.status(201).json(userUpdatedPasswordStatus);
         }catch(error){
           console.log('error getting all users:', error);
-          res.status(500).json({message: 'An error occurred while getting all users.'})
+          res.status(500).json({message: 'An error occurred while getting all users.', type:"error"})
         }
       }
 
@@ -105,7 +105,7 @@ class userController{
         const authToken = req.cookies.authToken
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  
         try{
           const userLangCode = req.body.langCode
@@ -113,7 +113,7 @@ class userController{
           res.status(201).json(userUpdatedLangStatus);
         }catch(error){
           console.log('error getting all users:', error);
-          res.status(500).json({message: 'An error occurred while getting all users.'})
+          res.status(500).json({message: 'An error occurred while getting all users.' , type:"error"})
         }
       }
 
@@ -121,7 +121,7 @@ class userController{
         const authToken = req.cookies.authToken
         const userId: string | null = validateAuthToken(authToken);
         if (userId === null) {
-            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' });
+            return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  
         try{
           const { name, email, phoneNumber, dateOfBirth } = req.body.newUserData;
@@ -129,7 +129,7 @@ class userController{
           res.status(201).json(updateUserDataStatus);
         }catch(error){
           console.log('error getting all users:', error);
-          res.status(500).json({message: 'An error occurred while getting all users.'})
+          res.status(500).json({message: 'An error occurred while getting all users.' , type:"error"})
         }
       }
 }

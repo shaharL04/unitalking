@@ -7,6 +7,7 @@ import AddChat from '@/src/components/addChat/addChat';
 import axios from 'axios';
 import './chatsList.css'
 import '@/src/app/daisui.css'
+import Alerts from "@/src/components/Alerts";
 import { useRouter } from 'next/navigation';
 import Header from '@/src/components/header/Header';
 import Footer from '@/src/components/footer/Footer';
@@ -21,6 +22,7 @@ const encrypt = (text) => {
 const ChatsList = () => {
   const [chats, setChats] = useState([]);
   const [newChatWasCreated,setNewChatWasCreated] = useState(false);
+  const [alerts, setAlerts] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [chatsForAutoComplete, setChatsForAutoComplete] = useState([]);
   const [opened, { open, close }] = useDisclosure(false);
@@ -34,13 +36,24 @@ const ChatsList = () => {
   //retrieve user chats
   const retrieveAllChatsTheUserHasByTimeOrder = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/retrieveAllChatsTheUserHasByTimeOrder",{test: "test"},{withCredentials: true}); 
-      console.log("chatList"+JSON.stringify(response.data.sortedChats))
+      setAlerts([]); // Clear existing alerts before making the request
+      const response = await axios.post(
+        "http://localhost:8080/retrieveAllChatsTheUserHasByTimeOrder", 
+        { test: "test" }, 
+        { withCredentials: true }
+      );
+      
+      console.log("chatList: " + JSON.stringify(response.data.sortedChats));
       setChats(response.data.sortedChats);
       createChatsNamesArr(response.data.sortedChats);
     } catch (error) {
-      console.error("Error fetching chat messages:", error);
-    }
+      if (error.response) {
+        setAlerts([error.response.data]); // Handle server-side errors
+        console.error('Error fetching chat messages:', error.response.data);
+      } else {
+        console.error('Error fetching chat messages:', error.message); // General errors
+      }
+    }    
   };
   
   useEffect(() => {
@@ -54,25 +67,34 @@ const ChatsList = () => {
 
       const createNewChat = async () => {
         try {
-
+          setAlerts([]); // Clear existing alerts before making the request
           const formData = new FormData();
-      
-
+          
           formData.append('groupName', newChatData.groupName);
           formData.append('groupMembersArr', JSON.stringify(newChatData.selectedMembers)); 
           formData.append('groupImage', newChatData.groupImage);
-      
-          const response = await axios.post("http://localhost:8080/createNewChat", formData, {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'multipart/form-data' 
+          
+          const response = await axios.post(
+            "http://localhost:8080/createNewChat", 
+            formData, 
+            {
+              withCredentials: true,
+              headers: {
+                'Content-Type': 'multipart/form-data' 
+              }
             }
-          });
+          );
+          
           setNewChatWasCreated(true);
           console.log('Response:', response.data);
         } catch (error) {
-          console.error("Error creating new chat:", error);
-        }
+          if (error.response) {
+            setAlerts([error.response.data]); // Handle server-side errors
+            console.error('Error creating new chat:', error.response.data);
+          } else {
+            console.error('Error creating new chat:', error.message); // General errors
+          }
+        }        
       };
       
 
@@ -98,7 +120,25 @@ const ChatsList = () => {
 
   
   const chatItemSelected = async (chat) =>{
-    const response = await axios.post("http://localhost:8080/getChatUsers",{currentLoggedUser: chat.user_id, chatID: chat.chat_id})
+    try {
+      setAlerts([]); // Clear existing alerts before making the request
+      const response = await axios.post(
+        "http://localhost:8080/getChatUsers", 
+        {
+          currentLoggedUser: chat.user_id,
+          chatID: chat.chat_id
+        }
+      );
+      
+      console.log('Chat users response:', response.data);
+    } catch (error) {
+      if (error.response) {
+        setAlerts([error.response.data]); // Handle server-side errors
+        console.error('Error fetching chat users:', error.response.data);
+      } else {
+        console.error('Error fetching chat users:', error.message); // General errors
+      }
+    }
     const userIdsArr = response.data.usersInChats.map((user) => user.user_id);
     console.log("usersInChat"+userIdsArr)
 
@@ -122,6 +162,7 @@ const ChatsList = () => {
               />
             </div>
         ))}
+        <Alerts alerts={alerts}/>
       </div>
       <div className='addNewChatDiv'>
           <div className='modalChatDiv'>

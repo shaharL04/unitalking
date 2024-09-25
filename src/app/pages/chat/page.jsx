@@ -4,6 +4,7 @@ import MyCreatedMessages from "@/src/components/MyCreatedMessages";
 import OthersCreatedMessages from "@/src/components/OthersCreatedMessages";
 import SendBtn from "@/src/components/sendBtn/sendBtn";
 import "@/src/app/daisui.css";
+import Alerts from "@/src/components/Alerts";
 import "./chat.css";
 import axios from 'axios'; 
 import Header from "@/src/components/header/Header";
@@ -23,6 +24,7 @@ export default function Chat() {
   const [message, setMessage] = useState('');
   const [chatObject, setChatObject] = useState({})
   const [sortedMessagesArray, setSortedMessagesArray] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [socket, setSocket] = useState(null);
   const [decryptedGroupId, setDecryptedGroupId] = useState(null);
   const [decryptedUsersInGroupArr, setDecryptedUsersInGroupArr] = useState([]);
@@ -59,32 +61,45 @@ export default function Chat() {
   }, []); 
 
   const getChatInfo = async (groupId) =>{
-    try{
+    try {
+      setAlerts([]);
       const response = await axios.post("http://localhost:8080/getChatInfoByChatId", {
         groupId: groupId,
       });
-      console.log("this is chat Info: "+ JSON.stringify(response.data.chatObject.name))
+      console.log("this is chat Info: " + JSON.stringify(response.data.chatObject.name));
+      
       setChatObject({
         chatName: response.data.chatObject.name,
-        chatImage: response.data.chatObject.group_photo[0].pathToPhoto
-      })
-    }catch(error){
-      console.log("error getting chat info: "+ error)
-    }
+        chatImage: response.data.chatObject.group_photo[0].pathToPhoto,
+      });
+    } catch (error) {
+      if (error.response) {
+        setAlerts([error.response.data]); // Handle server-side errors
+        console.error('Error getting chat info:', error.response.data);
+      } else {
+        console.error('Error getting chat info:', error.message); // General errors
+      }
+    }    
   }
 
   const retrieveMessages = async (decryptedGroupIdString, decryptedUserIdString) => {
     try {
+      setAlerts([]); 
       const response = await axios.post("http://localhost:8080/retrieveChatMessagesInOrder", {
         userId: decryptedUserIdString,
         groupId: decryptedGroupIdString,
       });
-      console.log("all of the messages in this chat group"+JSON.stringify(response.data.SortedMessagesArr));
-      setSortedMessagesArray(response.data.SortedMessagesArr); 
-
+      
+      console.log("All of the messages in this chat group: " + JSON.stringify(response.data.SortedMessagesArr));
+      setSortedMessagesArray(response.data.SortedMessagesArr);
     } catch (error) {
-      console.error("Error fetching chat messages:", error);
-    }
+      if (error.response) {
+        setAlerts([error.response.data]); // Handle server-side errors
+        console.error('Error fetching chat messages:', error.response.data);
+      } else {
+        console.error('Error fetching chat messages:', error.message); // General errors
+      }
+    }    
   };
 
 
@@ -128,31 +143,41 @@ export default function Chat() {
 
   };
 
-  const sendText = async() => {
-    const response = await axios.post("http://localhost:8080/newMessage", {
-      newMessage:message,
-      targetChatId: decryptedGroupId,
-      }, { withCredentials: true }); 
-
+  const sendText = async () => {
+    try {
+      setAlerts([]); // Clear existing alerts before making the request
+      const response = await axios.post("http://localhost:8080/newMessage", {
+        newMessage: message,
+        targetChatId: decryptedGroupId,
+      }, { withCredentials: true });
+  
       const translatedResponse = await axios.post("http://localhost:8080/translateNewMessage", {
-        newMessageForTranslate:response.data.message,
-        }, { withCredentials: true });
-
-      console.log("response after inserting new M"+JSON.stringify(translatedResponse.data))
+        newMessageForTranslate: response.data.message,
+      }, { withCredentials: true });
+  
+      console.log("Response after inserting new message: " + JSON.stringify(translatedResponse.data));
       setSortedMessagesArray(prevMessages => [...prevMessages, translatedResponse.data.message]);
-
-    if (socket) {
-      const targetChatUserIdArr = decryptedUsersInGroupArr; 
-      const messageData = {
-        targetChatUserIdArr,
-        data: response.data.message 
-      };
-      // Send the message to the WebSocket server
-      socket.send(JSON.stringify(messageData));
+  
+      if (socket) {
+        const targetChatUserIdArr = decryptedUsersInGroupArr;
+        const messageData = {
+          targetChatUserIdArr,
+          data: response.data.message,
+        };
+        socket.send(JSON.stringify(messageData)); // Send the message to the WebSocket server
+      }
+  
+      setMessage('');
+    } catch (error) {
+      if (error.response) {
+        setAlerts([error.response.data]); // Handle server-side errors
+        console.error('Error sending message:', error.response.data);
+      } else {
+        console.error('Error sending message:', error.message); // General errors
+      }
     }
-
-    setMessage('');
-  }
+  };
+  
 
 
 
@@ -172,6 +197,7 @@ export default function Chat() {
 
           })
         }
+        <Alerts alerts={alerts}/>
         </div>
         <div className="MessagesInput"> 
           <textarea 

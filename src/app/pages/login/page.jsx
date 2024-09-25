@@ -135,6 +135,7 @@ export default function Login() {
       }
     
       try {
+        setAlerts([])
         const response = await axios.post(
           "http://localhost:8080/createUserInDB",
           formData,

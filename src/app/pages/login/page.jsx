@@ -18,6 +18,7 @@ import {
   FileInput,
   Image,
 } from "@mantine/core";
+import Alerts from "@/src/components/Alerts";
 import "./login.css";
 
 export default function Login() {
@@ -25,6 +26,7 @@ export default function Login() {
   const [langArr, setLangArr] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [groupImage, setGroupImage] = useState(null);
+  const [alerts, setAlerts] = useState([]);
   const router = useRouter();
   const form = useForm({
     initialValues: {
@@ -48,6 +50,7 @@ export default function Login() {
   useEffect(() => {
     async function fetchTranslationLangs() {
       try {
+        setAlerts([])
         const response = await axios.get(
           "http://localhost:8080/getTranslationLangs"
         );
@@ -58,12 +61,27 @@ export default function Login() {
         });
         setLangArr(modifiedData);
       } catch (error) {
-        console.error("Error fetching translation languages:", error);
+        if (error.response) {
+          setAlerts([ error.response.data]);
+          console.error('Errors:', error.response.data); 
+      } else {
+          console.error('Error:', error.message);
+      }
       }
     }
 
     fetchTranslationLangs();
   }, []);
+
+  // Generic function to add an alert if it doesn't already exist
+  const addAlert = (alert) => {
+    setAlerts((prevAlerts) => {
+      if (!prevAlerts.includes(alert)) {
+        return [...prevAlerts, alert];
+      }
+      return prevAlerts;
+    });
+  };
 
   // Handle form submission
   function handleFormSubmit(values) {
@@ -82,32 +100,59 @@ export default function Login() {
 
   // Check if user exists
   async function checkIfUserExist(email, password) {
-    const response = await axios.post(
-      "http://localhost:8080/checkIfUserExistInDB",
-      { email, password },
-      { withCredentials: true }
-    );
-    router.push("/pages/chatsList");
-  }
+    try {
+      setAlerts([]);
+        const response = await axios.post(
+            "http://localhost:8080/checkIfUserExistInDB",
+            { email, password },
+            { withCredentials: true }
+        );
+
+        // Log the response on successful request
+        console.log(response.data); // This will contain the response data from the server
+        router.push("/pages/chatsList"); // Redirect to chatsList if the user exists
+    } catch (error) {
+        if (error.response) {
+            setAlerts([ error.response.data]);
+            console.error('Errors:', error.response.data); 
+        } else {
+            // Log any other errors that may occur
+            console.error('Error:', error.message);
+        }
+    }
+}
+
 
   // Create a new user
-  async function createNewUser(name, email, password, langCode, photo) {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("langCode", langCode);
-    if (photo) {
-      formData.append("userPhoto", photo);
-    }
-    const response = await axios.post(
-      "http://localhost:8080/createUserInDB",
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
+    async function createNewUser(name, email, password, langCode, photo) {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("langCode", langCode);
+      if (photo) {
+        formData.append("userPhoto", photo);
       }
-    );
-  }
+    
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/createUserInDB",
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      } catch (error) {
+        if (error.response) {
+          // If there's an error response from the server, set it as an alert
+          setAlerts([error.response.data]);
+          console.error('Errors:', error.response.data);
+        } else {
+          console.error('Error:', error.message);
+        }
+      }
+    }
+    
 
   // Handle image change and preview
   const handleImageChange = (e) => {
@@ -237,6 +282,7 @@ export default function Login() {
             <Button type="submit" radius="xl" className="customMantineBtn">
               {upperFirst(type)}
             </Button>
+            <Alerts alerts={alerts}/>
           </Group>
         </form>
       </Paper>

@@ -145,10 +145,7 @@
         }
     }
 
-    async batchTranslateMessages(
-        messages: Message[],
-        targetLanguage: string
-    ): Promise<Message[]> {
+    async batchTranslateMessages(messages: Message[], targetLanguage: string): Promise<Message[]> {
         const cachedTranslations: Message[] = [];
         const messagesToTranslate: Message[] = [];
 
@@ -156,7 +153,7 @@
         for (const message of messages) {
         const cacheKey = `translated_message:${message.id}:${targetLanguage}`;
         const cachedTranslation = await redisClient.get(cacheKey); // Use the redisClient here
-
+        console.log("this is cached translation: "+ cachedTranslation)
         if (cachedTranslation) {
             // Use object spread to maintain all message properties
             cachedTranslations.push({ ...message, content: cachedTranslation });
@@ -198,6 +195,7 @@
                 translatedText = response.data.translatedText;
             }
             // Update the message content and cache it in Redis
+            console.log("this is translated text: "+translatedText)
             const translatedMessage = { ...message, content: translatedText };
             await redisClient.setEx(
                 `translated_message:${message.id}:${targetLanguage}`,
@@ -212,11 +210,11 @@
         });
 
         const translatedMessages = await Promise.all(translationPromises);
-
+        console.log("this is all cached translation "+JSON.stringify(cachedTranslations));
         // Combine cached and newly translated messages
         return [...cachedTranslations, ...translatedMessages];
         }
-
+        console.log("this is all cached translation "+JSON.stringify(cachedTranslations));
         // Return cached translations only if all were found in the cache
         return cachedTranslations;
     }

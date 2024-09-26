@@ -14,11 +14,16 @@ class messageController{
         
         const userLangCode = await userService.getUserLangCode(userId)
         let SortedMessages;
+        
         if(userLangCode != 'NULL'){
+            console.log("Translating messages")
             const translatedMessagesArr = await messageService.batchTranslateMessages(mixedMessagesArr, userLangCode);
+            console.log("this is translated messages ARR"+translatedMessagesArr)
             SortedMessages = await messageService.sortMessagesByTimeOrder(translatedMessagesArr);
         }
-        SortedMessages = await messageService.sortMessagesByTimeOrder(mixedMessagesArr);
+        else{
+            SortedMessages = await messageService.sortMessagesByTimeOrder(mixedMessagesArr);
+        }
         //Sort the messages by timestamps and return them
         res.status(200).json({ SortedMessagesArr: SortedMessages});
         

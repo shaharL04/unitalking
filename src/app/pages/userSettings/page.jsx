@@ -16,10 +16,11 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'; // Import
 
 import AccountSettings from '@/src/components/accountSettings/AccountSettings';
 import ProfileSettings from '@/src/components/profileSettings/ProfileSettings';
+import Alerts from '@/src/components/Alerts';
 
 const UserSettings = () => {
   const [opened, setOpened] = useState(false);
-  const [activeSection, setActiveSection] = useState(null);
+  const [alerts, setAlerts] = useState([]);
   const [modalContent, setModalContent] = useState('');
   const [loggedUserData, setLoggedUserData] = useState('');
 
@@ -27,10 +28,21 @@ const UserSettings = () => {
   useLayoutEffect(() => {
     async function getUserInfo() {
       try {
-        const response = await axios.post("http://localhost:8080/getUserInfo",{text: "test"}, {withCredentials: true});
-        setLoggedUserData(response.data)
+        setAlerts([]); 
+        const response = await axios.post(
+          "http://localhost:8080/getUserInfo", 
+          { text: "test" }, 
+          { withCredentials: true }
+        );
+        
+        setLoggedUserData(response.data);
       } catch (error) {
-        console.error('Error fetching translation languages:', error);
+        if (error.response) {
+          setAlerts([error.response.data]); // Handle server-side errors
+          console.error('Error fetching user info:', error.response.data);
+        } else {
+          console.error('Error fetching user info:', error.message); // General errors
+        }
       }
     }
 
@@ -101,6 +113,7 @@ const UserSettings = () => {
         <Button onClick={() => setOpened(false)}>Close</Button>
       </Modal>
     </div>
+      <Alerts alerts={alerts}/>
     </div>
   );
 };

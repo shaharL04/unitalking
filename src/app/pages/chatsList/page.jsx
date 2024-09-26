@@ -120,6 +120,7 @@ const ChatsList = () => {
 
   
   const chatItemSelected = async (chat) =>{
+    let userIdsArr;
     try {
       setAlerts([]); // Clear existing alerts before making the request
       const response = await axios.post(
@@ -131,6 +132,7 @@ const ChatsList = () => {
       );
       
       console.log('Chat users response:', response.data);
+      userIdsArr = response.data.usersInChats.map((user) => user.user_id);
     } catch (error) {
       if (error.response) {
         setAlerts([error.response.data]); // Handle server-side errors
@@ -139,7 +141,6 @@ const ChatsList = () => {
         console.error('Error fetching chat users:', error.message); // General errors
       }
     }
-    const userIdsArr = response.data.usersInChats.map((user) => user.user_id);
     console.log("usersInChat"+userIdsArr)
 
     console.log("chat"+chat.chat_id+" user"+chat.user_id)

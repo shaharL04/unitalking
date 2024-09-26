@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './profileSettings.css'; // Your CSS for styles
+import Alerts from '../Alerts';
 
 const ProfileSettings = ({ name, email , phoneNumber, dateOfBirth}) => {
   const [userData, setUserData] = useState({
@@ -9,18 +10,26 @@ const ProfileSettings = ({ name, email , phoneNumber, dateOfBirth}) => {
     phoneNumber: phoneNumber ?? '', 
     dateOfBirth: dateOfBirth ?? ''
   });
+  const [alerts, setAlerts] = useState([]);
 
   const handleSave = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/updateUserData", 
+      setAlerts([]); 
+      const response = await axios.post(
+        "http://localhost:8080/updateUserData", 
         { newUserData: userData },
         { withCredentials: true }
       );
       console.log('User data saved:', response.data);
     } catch (error) {
-      console.error('Error saving user data:', error);
+      if (error.response) {
+        setAlerts([error.response.data]); // Handle server-side errors
+        console.error('Error saving user data:', error.response.data);
+      } else {
+        console.error('Error saving user data:', error.message); // General errors
+      }
     }
-  };
+  };  
   
 
   const handleInputChange = (e) => {
@@ -87,6 +96,7 @@ const ProfileSettings = ({ name, email , phoneNumber, dateOfBirth}) => {
       <button className="save-button" onClick={handleSave}>
         Save
       </button>
+      <Alerts alerts={alerts}/>
     </div>
   );
 };

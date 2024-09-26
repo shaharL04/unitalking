@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './addChat.css';
 import SearchBox from '../searchBox/SearchBox';
 import axios from 'axios';
+import Alerts from '../Alerts';
 
 const AddChat = ({ newChatHandler }) => {
   const [groupName, setGroupName] = useState("");
@@ -9,13 +10,28 @@ const AddChat = ({ newChatHandler }) => {
   const [groupImage, setGroupImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedMembers, setSelectedMembers] = useState([]); 
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     const getAllUsersArray = async () => {
-      const response = await axios.post('http://localhost:8080/getAllUsers', { test: "test" }, { withCredentials: true });
-      console.log("this is all users Arr: " + JSON.stringify(response.data.rows));
-      setAllUsers(response.data.rows);
-    };
+      try {
+        setAlerts([]); 
+        const response = await axios.post(
+          'http://localhost:8080/getAllUsers',
+          { test: "test" },
+          { withCredentials: true }
+        );
+        console.log("this is all users Arr: " + JSON.stringify(response.data.rows));
+        setAllUsers(response.data.rows);
+      } catch (error) {
+        if (error.response) {
+          setAlerts([error.response.data]); // Handle server-side errors
+          console.error('Error fetching all users:', error.response.data);
+        } else {
+          console.error('Error fetching all users:', error.message); // General errors
+        }
+      }
+    };    
     getAllUsersArray();
   }, []);
 
@@ -124,6 +140,7 @@ const AddChat = ({ newChatHandler }) => {
       <button type="submit" className="submit-button">
         Create Group
       </button>
+      <Alerts alerts = {alerts}/>
     </form>
   );
 };

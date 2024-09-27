@@ -9,15 +9,21 @@ const Footer = ({onClickFunc}) => {
     router.push(`/pages/userSettings`);
   }
 
+  const openHomePage = () => {
+    router.push(`/`);
+  }
+
   return (
     <div className="footerDiv">
-        <img src="/Home.svg" alt="Home icon" className="icon" />
+        <button onClick={openHomePage}>
+            <img src="/Home.svg" alt="Home icon" className="icon" />
+        </button>
         <button className="newChatButton" onClick={onClickFunc}>
           <img src="/Plus.svg" alt="Plus icon" className="icon" />
           New Chat
         </button>
         <button onClick={openUserSettingsPage}>
-            <img src="/Settings.svg" alt="Plus icon" className="" />
+            <img src="/Settings.svg" alt="Setting icon" className="" />
         </button>
     </div>
   );

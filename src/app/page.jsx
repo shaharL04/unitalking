@@ -13,7 +13,7 @@ const HomePage = () => {
 
       {/* Hero Section */}
       <section className="hero">
-        <div className="hero-content">
+        <div className="hero-content-div">
           <h2>Connecting the World through Conversations</h2>
           <p>Chat, translate, and meet new people across the globe in a language you understand.</p>
           <a href="/pages/login" className="cta-button hero-button">Join Unitalking Now</a>

@@ -40,7 +40,7 @@ class userController{
       async getUserInfo(req: Request, res: Response) {
         const authToken = req.cookies.authToken
         console.log(authToken)
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
           if (userId === null) {
               return res.status(401).json({ message: 'Unauthorized: please signIn' , type:"error" });
           }  
@@ -65,14 +65,14 @@ class userController{
           res.status(201).json(newUser);
         } catch (error) {
           console.error('Error creating user:', error);
-          res.status(500).json({ message: 'An error occurred while creating the user.', type:"error" });
+          res.status(500).json({ message: 'An error occurred while creating the user. please make sure the Username and Email are unique values', type:"error" });
         }
       }
 
       async getAllUsers(req:Request, res:Response){
         const authToken = req.cookies.authToken
         console.log(authToken)
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  
@@ -87,7 +87,7 @@ class userController{
 
       async updateUserPassword(req:Request, res:Response){
         const authToken = req.cookies.authToken
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token', type:"error" });
         }  
@@ -103,7 +103,7 @@ class userController{
 
       async updatePreferedLang(req:Request, res:Response){
         const authToken = req.cookies.authToken
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  
@@ -119,7 +119,7 @@ class userController{
 
       async updateUserData(req:Request, res:Response){
         const authToken = req.cookies.authToken
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  

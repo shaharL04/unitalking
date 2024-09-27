@@ -7,7 +7,7 @@ class chatController{
         console.log("reached here")
         const authToken = req.cookies.authToken
         console.log(authToken)
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }
@@ -38,7 +38,7 @@ class chatController{
         const { groupName, groupMembersArr } = req.body; 
 
         const authToken = req.cookies.authToken
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token', type:"error" });
         }

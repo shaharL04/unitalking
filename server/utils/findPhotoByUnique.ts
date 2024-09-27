@@ -1,11 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 
-const findPhotosByUnique = (photosUnique: { chatId: string; uniqueToMatchInFolder: string }[] ) => {
+const findPhotosByUnique = (photosUnique: {chatId: number; uniqueToMatchInFolder: string | undefined}[]): {chatId: number; pathToPhoto: string | undefined}[] | null[] => {
+
     // Define the directory where the photos are stored
     const photosDirectory = path.join(__dirname, '../..', 'photos', 'chatPhotos');
     console.log(photosDirectory); 
-    const chatIdNphotoPath: {chatId: string; pathToPhoto: string}[] = []
+    const chatIdNphotoPath: {chatId: number; pathToPhoto: string}[] = []
     try {
         const files = fs.readdirSync(photosDirectory);
          photosUnique.map((photoUnique,index) => {
@@ -22,7 +23,6 @@ const findPhotosByUnique = (photosUnique: { chatId: string; uniqueToMatchInFolde
         return chatIdNphotoPath;
     } catch (error) {
         console.error('Error reading the chatPhotos directory:', error);
-        // Return an array of nulls in case of an error
         return photosUnique.map(() => null);
     }
 };

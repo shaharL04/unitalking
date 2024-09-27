@@ -5,8 +5,8 @@ import axios from 'axios';
 import validateAuthToken from '../utils/validateAuthToken';
 class messageController{
     async retrieveChatMessagesInOrder(req: Request, res: Response) {
-        const userId: string = req.body.userId;
-        const groupId: string = req.body.groupId;
+        const userId: number = req.body.userId;
+        const groupId: number = req.body.groupId;
         try {
         const userMessages = await messageService.retrieveMessagesSentByUser(userId, groupId);
         const contactMessages = await messageService.retrieveMessagesSentByGroupUsers(userId, groupId );
@@ -37,13 +37,13 @@ class messageController{
         console.log("bodyyy"+ JSON.stringify(req.body))
         const authToken = req.cookies.authToken
         console.log("auth tokennnn"+authToken )
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }
 
         const incomingMessage: string = req.body.newMessage;
-        const targetChatId: string = req.body.targetChatId;
+        const targetChatId: number = req.body.targetChatId;
         try {
         const userMessages = await messageService.newMessage(userId, targetChatId,incomingMessage);
         res.status(200).json({ message: userMessages});
@@ -56,7 +56,7 @@ class messageController{
 
     async translateNewMessage(req:Request, res: Response){
         const authToken = req.cookies.authToken
-        const userId: string | null = validateAuthToken(authToken);
+        const userId: number | null = validateAuthToken(authToken);
         if (userId === null) {
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }

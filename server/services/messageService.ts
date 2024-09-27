@@ -5,10 +5,8 @@
     import userService from "./userService";
 
     class messageService {
-    async retrieveMessagesSentByUser(
-        userId: string,
-        groupId: string
-    ): Promise<Message[]> {
+
+    async retrieveMessagesSentByUser(userId: number, groupId: number): Promise<Message[]> {
         const query = `
                 SELECT * FROM messages
                 WHERE sender_id = $1 AND receiver_group_id = $2
@@ -24,10 +22,7 @@
         }
     }
 
-    async retrieveMessagesSentByGroupUsers(
-        userId: string,
-        groupId: string
-    ): Promise<Message[]> {
+    async retrieveMessagesSentByGroupUsers(userId: number, groupId: number ): Promise<Message[]> {
         const query = `
                 SELECT * FROM messages
                 WHERE sender_id != $1 AND receiver_group_id = $2
@@ -51,11 +46,7 @@
         );
     }
 
-    async newMessage(
-        userId: string,
-        targetGroupId: string,
-        incomingMessage: string
-    ): Promise<Message> {
+    async newMessage(userId: number, targetGroupId: number, incomingMessage: string): Promise<Message> {
         const query = `
             INSERT INTO messages (sender_id, receiver_group_id, message_type, content)
             VALUES ($1, $2, 'text', $3)
@@ -89,7 +80,7 @@
         }
     }
 
-    async translateNewMessage(userId: string, message: Message) {
+    async translateNewMessage(userId: number, message: Message):Promise<Message> {
         try {
         let translatedText;
         const userLangCode = await userService.getUserLangCode(userId);

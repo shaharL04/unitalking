@@ -2,11 +2,11 @@ import { json } from 'body-parser';
 import { pool } from '../config/dbConfig';
 import { sumUser } from '../types/sumUser';
 import { User } from '../types/user';
+import { Chat } from '../types/chat';
 import findPhotosByUnique from '../utils/findPhotoByUnique';
-import { log } from 'console';
 
 class chatService{
-    async retrieveAllChatsTheUserHasByTimeOrder (userId: string) {
+    async retrieveAllChatsTheUserHasByTimeOrder (userId: number): Promise<Chat[]> {
       const query = `
       SELECT chats.*, chat_participants.*
         FROM chat_participants
@@ -25,10 +25,10 @@ class chatService{
       }
     };
 
-    async retrieveAllChatsPhotos(sortedChatsArr: any[]){
-      const chatIdNUniqueArray: { chatId: string; uniqueToMatchInFolder: string }[] = [];
+    async retrieveAllChatsPhotos(sortedChatsArr: Chat[]): Promise<Chat[]>{
+      const chatIdNUniqueArray: { chatId: number; uniqueToMatchInFolder: string | undefined }[] = [];
       sortedChatsArr.forEach((chat, index) => {
-        const uniqueToMatchInFolder: string = chat.group_photo;
+        const uniqueToMatchInFolder: string | undefined = chat.group_photo;
         chatIdNUniqueArray[index] = { chatId: chat.id, uniqueToMatchInFolder: uniqueToMatchInFolder }; 
       });
       const photosPathArray = findPhotosByUnique(chatIdNUniqueArray);
@@ -41,7 +41,7 @@ class chatService{
       return sortedChatsArrWPhotoPaths;
     }
 
-    async getChatUsers (userId: string, chatID: string) {
+    async getChatUsers (userId: number, chatID: number): Promise<Chat[]> {
       console.log(userId);
       console.log(chatID);
       const query = `
@@ -58,7 +58,7 @@ class chatService{
       }
     };
     
-    async createNewChat(groupName: string , photoUnique: string ): Promise<string>{
+    async createNewChat(groupName: string , photoUnique: string ): Promise<number>{
       const query = `INSERT INTO chats (name, group_photo)VALUES ($1, $2) RETURNING id;`
       try {
         const result = await pool.query(query, [groupName, photoUnique]);
@@ -69,23 +69,24 @@ class chatService{
       }
     }
 
-    async insertUsersToNewChat(chat_id:string , groupMembersArr: sumUser[], currentLoggedUser: string){
+    async insertUsersToNewChat(chat_id: number, groupMembersArr: sumUser[], currentLoggedUser: number): Promise<{ message: string; type: string }>{
       const query = `INSERT INTO chat_participants(chat_id, user_id)VALUES ($1, $2) `
       try {
         
         console.log("groupMembersArr backend"+ groupMembersArr)
         groupMembersArr.map(async (userObject) =>{
           const userIdToInsert = userObject.id;
-          const result = await pool.query(query, [chat_id, userIdToInsert]);
+          await pool.query(query, [chat_id, userIdToInsert]);
         }) 
-        const result = await pool.query(query, [chat_id, currentLoggedUser]);
+        await pool.query(query, [chat_id, currentLoggedUser]);
+        return { message: 'Users were inserted to the new chat successfully.', type:"success" };
       } catch (error) {
         console.error('Error executing query:', error);
         throw error;
       }
     }
 
-    async getChatInfoByChatId(chat_id: string){
+    async getChatInfoByChatId(chat_id: number): Promise<Chat>{
       const query = `SELECT name, group_photo from chats WHERE id = $1`
       try {
         const result = await pool.query(query, [chat_id]);

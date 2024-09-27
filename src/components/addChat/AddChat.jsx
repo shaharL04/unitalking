@@ -21,8 +21,8 @@ const AddChat = ({ newChatHandler }) => {
           { test: "test" },
           { withCredentials: true }
         );
-        console.log("this is all users Arr: " + JSON.stringify(response.data.rows));
-        setAllUsers(response.data.rows);
+        console.log("this is all users Arr: " + JSON.stringify(response.data));
+        setAllUsers(response.data);
       } catch (error) {
         if (error.response) {
           setAlerts([error.response.data]); // Handle server-side errors

@@ -1,0 +1,27 @@
+.received-message-container {
+  display: flex;
+  justify-content: flex-start;
+  margin: 10px
+}
+
+.received-message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 20px 20px 20px 0; /* Rounded corners on the top and left */
+  font-size: 16px;
+  background-color: #E8D5FB; /* Brighter color */
+  color: black;
+  position: relative; /* For positioning the tail */
+}
+
+.received-message-bubble::after {
+  content: '';
+  position: absolute;
+  left: -10px; /* Position tail to the left of the bubble */
+  top: 10px; /* Vertically center it */
+  width: 0;
+  height: 0;
+  border-right: 10px solid #E8D5FB; /* Same color as the bubble */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}

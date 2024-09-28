@@ -1,0 +1,27 @@
+.sent-message-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px;
+}
+
+.sent-message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 20px 20px 0 20px; /* Rounded corners on the top and right */
+  font-size: 16px;
+  background-color: rgba(215, 187, 245); /* Brighter color */
+  color: black;
+  position: relative; /* For positioning the tail */
+}
+
+.sent-message-bubble::after {
+  content: '';
+  position: absolute;
+  right: -10px; /* Position tail to the right of the bubble */
+  top: 10px; /* Vertically center it */
+  width: 0;
+  height: 0;
+  border-left: 10px solid #E8D5FB; /* Same color as the bubble */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}

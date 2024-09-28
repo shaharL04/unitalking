@@ -76,7 +76,7 @@
       });
       
       // Helper function to send a message to a single user
-      async function sendToUser(targetUserId: string, data: any) {
+      async function sendToUser(targetUserId: number, data: any) {
         console.log("this is the data send to user: "+ JSON.stringify(data))
         const translatedData = await messageService.translateNewMessage(targetUserId, data)
         if (userConnections[targetUserId]) {

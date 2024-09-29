@@ -5,6 +5,7 @@ import OthersCreatedMessages from "@/src/components/otherMessages/OthersCreatedM
 import SendBtn from "@/src/components/sendBtn/sendBtn";
 import "@/src/app/daisui.css";
 import Alerts from "@/src/components/Alerts";
+import { useRouter } from 'next/navigation';
 import "./chat.css";
 import axios from 'axios'; 
 import Header from "@/src/components/header/Header";
@@ -29,6 +30,20 @@ export default function Chat() {
   const [decryptedGroupId, setDecryptedGroupId] = useState(null);
   const [decryptedUsersInGroupArr, setDecryptedUsersInGroupArr] = useState([]);
   const [decryptedUserId, setDecryptedUserId] = useState(null);
+
+  const router = useRouter();
+
+  useEffect(() =>{
+    const checkIfUserAuthTokenExist = async () => {
+      const response = await axios.get("http://localhost:8080/checkToken",{withCredentials: true})
+      console.log(response.data.isAuth)
+      if(!response.data.isAuth){
+        router.push('/pages/login')
+      }
+
+    }
+    checkIfUserAuthTokenExist()
+  },[])
 
   useEffect(() => {
     const retrieveValuesFromUrl = async () => {

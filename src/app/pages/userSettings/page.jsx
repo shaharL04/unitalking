@@ -14,6 +14,9 @@ import GavelIcon from '@mui/icons-material/Gavel';
 import InfoIcon from '@mui/icons-material/Info';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'; // Import the arrow icon
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 import AccountSettings from '@/src/components/accountSettings/AccountSettings';
 import ProfileSettings from '@/src/components/profileSettings/ProfileSettings';
 import Alerts from '@/src/components/Alerts';
@@ -24,6 +27,19 @@ const UserSettings = () => {
   const [modalContent, setModalContent] = useState('');
   const [loggedUserData, setLoggedUserData] = useState('');
 
+  const router = useRouter();
+
+  useEffect(() =>{
+    const checkIfUserAuthTokenExist = async () => {
+      const response = await axios.get("http://localhost:8080/checkToken",{withCredentials: true})
+      console.log(response.data.isAuth)
+      if(!response.data.isAuth){
+        router.push('/pages/login')
+      }
+
+    }
+    checkIfUserAuthTokenExist()
+  },[])
 
   useLayoutEffect(() => {
     async function getUserInfo() {

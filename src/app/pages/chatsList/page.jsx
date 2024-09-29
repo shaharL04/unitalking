@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import ChatItem from '@/src/components/chatItem/ChatItem';
 import { Modal } from '@mantine/core';
@@ -56,6 +56,18 @@ const ChatsList = () => {
     }    
   };
   
+  useEffect(() =>{
+    const checkIfUserAuthTokenExist = async () => {
+      const response = await axios.get("http://localhost:8080/checkToken",{withCredentials: true})
+      console.log(response.data.isAuth)
+      if(!response.data.isAuth){
+        router.push('/pages/login')
+      }
+
+    }
+    checkIfUserAuthTokenExist()
+  },[])
+
   useEffect(() => {
     retrieveAllChatsTheUserHasByTimeOrder();
   }, [newChatWasCreated]);

@@ -19,12 +19,13 @@ router.post('/getAllUsers', userController.getAllUsers);
 router.post('/updateUserPassword', userController.updateUserPassword);
 router.post('/updatePreferedLang', userController.updatePreferedLang);
 router.post('/updateUserData', userController.updateUserData)
+router.get('/checkToken', userController.checkIfUserHasToken)
 
 //Messages routers
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);
 router.post('/newMessage', messageController.newMessage);
 router.post('/translateNewMessage', messageController.translateNewMessage)
-router.get("/getTranslationLangs", messageController.getTranslationLangs)
+router.get('/getTranslationLangs', messageController.getTranslationLangs)
 
 
 //Chat routers

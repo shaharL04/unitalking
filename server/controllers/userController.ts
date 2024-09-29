@@ -132,6 +132,19 @@ class userController{
           res.status(500).json({message: 'An error occurred while getting all users.' , type:"error"})
         }
       }
+
+      checkIfUserHasToken(req:Request, res:Response){
+        const authToken = req.cookies.authToken
+        console.log("this is auth tokennn : "+authToken)
+        const userId: number | null = validateAuthToken(authToken);
+        console.log("this is auth tokennn 2: "+userId)
+        if (userId === null) {
+          res.status(201).json({isAuth: false});
+        }
+        else{
+          res.status(201).json({isAuth: true});
+        }
+      }
 }
 
 export default new userController();

@@ -17,7 +17,7 @@
     border: none;
     padding: 12px 24px;
     font-size: 20px;
-    border-radius: 50px;
+    border-radius: 20px;
     display: inline-flex; 
     align-items: center;
     justify-content: center;
@@ -36,5 +36,15 @@
     margin-right: 8px; 
     width: 24px;
     height: 24px;
+  }
+
+  .homeBtn{
+    width: 35px;
+    height: 35px;
+  }
+
+  .settingBtn{
+    width: 40px;
+    height: 40px;
   }
   

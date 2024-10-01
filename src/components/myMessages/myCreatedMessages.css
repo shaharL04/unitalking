@@ -13,15 +13,3 @@
   color: black;
   position: relative; /* For positioning the tail */
 }
-
-.sent-message-bubble::after {
-  content: '';
-  position: absolute;
-  right: -10px; /* Position tail to the right of the bubble */
-  top: 10px; /* Vertically center it */
-  width: 0;
-  height: 0;
-  border-left: 10px solid #E8D5FB; /* Same color as the bubble */
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-}

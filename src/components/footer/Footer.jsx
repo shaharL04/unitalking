@@ -15,14 +15,14 @@ const Footer = ({onClickFunc}) => {
 
   return (
     <div className="footerDiv">
-        <button onClick={openHomePage}>
+        <button className="homeBtn" onClick={openHomePage}>
             <img src="/Home.svg" alt="Home icon" className="icon" />
         </button>
         <button className="newChatButton" onClick={onClickFunc}>
           <img src="/Plus.svg" alt="Plus icon" className="icon" />
           New Chat
         </button>
-        <button onClick={openUserSettingsPage}>
+        <button className="settingBtn" onClick={openUserSettingsPage}>
             <img src="/Settings.svg" alt="Setting icon" className="" />
         </button>
     </div>

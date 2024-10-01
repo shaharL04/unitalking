@@ -3,7 +3,6 @@ import { useState, useEffect,useLayoutEffect } from "react";
 import MyCreatedMessages from "@/src/components/myMessages/MyCreatedMessages";
 import OthersCreatedMessages from "@/src/components/otherMessages/OthersCreatedMessages";
 import SendBtn from "@/src/components/sendBtn/sendBtn";
-import "@/src/app/daisui.css";
 import Alerts from "@/src/components/Alerts";
 import { useRouter } from 'next/navigation';
 import "./chat.css";

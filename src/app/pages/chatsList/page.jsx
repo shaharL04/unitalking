@@ -6,7 +6,6 @@ import { Modal } from '@mantine/core';
 import AddChat from '@/src/components/addChat/addChat';
 import axios from 'axios';
 import './chatsList.css'
-import '@/src/app/daisui.css'
 import Alerts from "@/src/components/Alerts";
 import { useRouter } from 'next/navigation';
 import Header from '@/src/components/header/Header';

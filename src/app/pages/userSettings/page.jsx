@@ -3,8 +3,7 @@
 import React, { useState, useLayoutEffect } from 'react';
 import { Modal, Button } from '@mantine/core';
 import axios from 'axios';
-import './UserSettings.css'; // Your CSS for styles
-import '@/src/app/globals.css'
+import './UserSettings.css';
 
 // Import Material Icons
 import LockIcon from '@mui/icons-material/Lock';
@@ -98,10 +97,19 @@ const UserSettings = () => {
     }
   };
 
+  const returnToChatList = () => {
+    router.push('/pages/chatsList')
+  }
+
   return (
     <div className='userSettingsDiv'>
     <div className="user-settings-container">
-      <h1 className="settings-header">User Settings</h1>
+      <div className='settingsHeaderDiv'>
+          <h1 className="settings-header">User Settings</h1>
+          <button className="returnBtn" onClick={returnToChatList}>
+              <img src="/returnBtn.svg" alt="return button icon" className="" />
+          </button>
+      </div>
       <div className="settings-sections">
         {settingsSections.map((section, index) => (
           <div key={index} className="settings-card" onClick={() => handleModalOpen(section)}>

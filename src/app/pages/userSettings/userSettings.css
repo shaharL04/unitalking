@@ -88,3 +88,13 @@ html, body {
   justify-content: center; /* Align modal content center */
   align-items: center;
 }
+
+.settingsHeaderDiv{
+  display: flex;
+  justify-content: space-between;
+}
+
+.returnBtn{
+  width: 40px;
+  height: 40px;
+}

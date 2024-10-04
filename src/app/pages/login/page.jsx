@@ -48,6 +48,18 @@ export default function Login() {
   });
 
   useEffect(() => {
+    const checkIfUserAuthTokenExist = async () => {
+      const response = await axios.get("http://localhost:8080/checkToken",{withCredentials: true})
+      console.log(response.data.isAuth)
+      if(response.data.isAuth){
+        router.push('/pages/chatsList')
+      }
+
+    }
+    checkIfUserAuthTokenExist()
+  },[])
+
+  useEffect(() => {
     async function fetchTranslationLangs() {
       try {
         setAlerts([])
@@ -73,15 +85,6 @@ export default function Login() {
     fetchTranslationLangs();
   }, []);
 
-  // Generic function to add an alert if it doesn't already exist
-  const addAlert = (alert) => {
-    setAlerts((prevAlerts) => {
-      if (!prevAlerts.includes(alert)) {
-        return [...prevAlerts, alert];
-      }
-      return prevAlerts;
-    });
-  };
 
   // Handle form submission
   function handleFormSubmit(values) {

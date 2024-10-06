@@ -89,6 +89,10 @@ html, body {
   align-items: center;
 }
 
+.mantine-Modal-inner{
+  left: 0;
+}
+
 .settingsHeaderDiv{
   display: flex;
   justify-content: space-between;

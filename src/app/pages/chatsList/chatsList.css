@@ -28,3 +28,7 @@ html, body{
     height: 76vh;
 }
 
+.mantine-Modal-inner{
+  left: 0;
+}
+

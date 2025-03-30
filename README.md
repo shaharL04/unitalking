@@ -16,6 +16,11 @@ The **Unitalking** platform is a global chat solution that empowers users to eng
 - **Real-Time Messaging**: WebSockets (via Socket.io)
 - **Translation Integration**: LibreTranslate
 
+## How to View the code
+**Frontend**: In order to view the frontend code you can check the frontend branch
+<br/>
+**Backend**: In order to view the backend code you can check the backend branch
+
 ## Demo
 
 <img src="https://github.com/user-attachments/assets/b8eac477-a391-45ec-a2d2-cc3512af8f60" alt="unitalking1" width="300" height="600">

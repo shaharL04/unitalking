@@ -16,10 +16,12 @@ The **Unitalking** platform is a global chat solution that empowers users to eng
 - **Real-Time Messaging**: WebSockets (via Socket.io)
 - **Translation Integration**: LibreTranslate
 
-## How to View the code
-**Frontend**: In order to view the frontend code you can check the frontend branch
-<br/>
-**Backend**: In order to view the backend code you can check the backend branch
+## How to run the code
+1. In the terminal go to \JARVIS\frontend and then npm i
+2. In the terminal go to \JARVIS\backend and then npm i
+3. Make sure you have redis docker container
+4. fill the env var
+5. run "npm run dev" at \JARVIS\backend
 
 ## Demo
 

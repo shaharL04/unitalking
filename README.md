@@ -1,6 +1,7 @@
+
 # Unitalking
 
-The **Unitalking** platform is a global chat solution that empowers users to engage in real-time conversations across multiple languages. By leveraging a robust WebSocket-based messaging system alongside the LibreTranslate, Unitalking eliminates language barriers, enabling seamless and interactive communication.
+The **Unitalking** platform is a global chat solution that empowers users to engage in real-time conversations across multiple languages. By leveraging a robust WebSocket-based messaging system alongside LibreTranslate, Unitalking eliminates language barriers, enabling seamless and interactive communication.
 
 ## Features
 
@@ -11,17 +12,67 @@ The **Unitalking** platform is a global chat solution that empowers users to eng
 
 ## Technologies Used
 
-- **Frontend**: React.js, Javescript, CSS
+- **Frontend**: React.js, JavaScript, CSS
 - **Backend**: TypeScript, Express.js, Socket.io, PostgreSQL
 - **Real-Time Messaging**: WebSockets (via Socket.io)
 - **Translation Integration**: LibreTranslate
 
-## How to run the code
-1. In the terminal go to \JARVIS\frontend and then npm i
-2. In the terminal go to \JARVIS\backend and then npm i
-3. Make sure you have redis docker container
-4. fill the env var
-5. run "npm run dev" at \JARVIS\backend
+## 🚀 Getting Started
+
+Follow these steps to get the Unitalking platform up and running locally.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/shaharL04/unitalking.git
+cd unitalking
+```
+
+### 2. Install Frontend Dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+### 3. Install Backend Dependencies
+
+```bash
+cd ../backend
+npm install
+```
+
+### 4. Start Redis Using Docker
+
+Make sure Docker is installed and running on your system. Then run:
+
+```bash
+docker run --name redis -p 6379:6379 -d redis
+```
+
+If Redis is already running, you can skip this step.
+
+### 5. Set Up Environment Variables
+
+Create a `.env` file in the backend directory and add the following environment variables:
+
+```env
+DB_USER=USER
+DB_PASSWORD=PASSWORD
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=unitalking
+```
+
+Update the values according to your setup.
+
+### 6. Run the Backend Server
+
+```bash
+cd backend
+npm run dev
+```
+
 
 ## Demo
 

@@ -1,0 +1,104 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.userSettingsDiv {
+  min-height: 100vh; /* Ensure full height */
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #7B42F6, #89CFF0);
+}
+
+
+.user-settings-container {
+  padding: 24px;
+  max-width: 400px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 100%; /* Full width inside the flexbox parent */
+  max-width: 400px; /* Limit max width */
+}
+
+.settings-header {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 50px;
+}
+
+.settings-card {
+  display: flex;
+  justify-content: space-between; /* Distribute space between content and arrow */
+  align-items: center;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.settings-card:hover {
+  background-color: #e6e9ef;
+}
+
+.settings-card-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-container {
+  font-size: 28px; 
+  color: #6c63ff; 
+}
+
+.settings-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.settings-description {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+}
+
+.arrow-icon {
+  color: #6c63ff; 
+  font-size: 18px;
+}
+
+.mantineContainer {
+  /* Modal container adjustments */
+  display: flex;
+  justify-content: center; /* Align modal content center */
+  align-items: center;
+}
+
+.mantine-Modal-inner{
+  left: 0;
+}
+
+.settingsHeaderDiv{
+  display: flex;
+  justify-content: space-between;
+}
+
+.returnBtn{
+  width: 40px;
+  height: 40px;
+}

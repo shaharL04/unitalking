@@ -132,7 +132,7 @@
         return translatedMessage;
         } catch (error) {
         console.error("Error translating message:", error);
-        return message; // Fall back to the original message if translation fails
+        return message; 
         }
     }
 

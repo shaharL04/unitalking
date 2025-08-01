@@ -5,7 +5,7 @@ import crypto from "crypto";
 // Multer storage for chat photos
 export const multerChatStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "photos/chatPhotos/"); // Directory for chat group photos
+    cb(null, "photos/chatPhotos/"); 
   },
   filename: (req, file, cb) => {
     const fileExt = path.extname(file.originalname);
@@ -19,7 +19,7 @@ export const multerChatStorage = multer.diskStorage({
 // Multer storage for user profile photos
 export const multerUserStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "photos/usersPhotos/"); // Directory for user profile photos
+    cb(null, "photos/usersPhotos/"); 
   },
   filename: (req, file, cb) => {
     const fileExt = path.extname(file.originalname);

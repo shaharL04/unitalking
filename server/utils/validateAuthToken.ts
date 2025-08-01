@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = 'your-secret-key'; // Make sure this matches the key used for signing tokens
+const SECRET_KEY = 'your-secret-key'; 
 
 function validateAuthToken(authToken: string): number | null {
   if (!authToken) {

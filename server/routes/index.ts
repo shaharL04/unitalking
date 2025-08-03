@@ -13,9 +13,9 @@ const uploadUserPhoto = multer({ storage: multerUserStorage }); // For user prof
 
 //user routers
 router.post('/checkIfUserExistInDB', userController.checkIfUserExists);
-router.post('/getUserInfo', userController.getUserInfo);
+router.post('/userInfo', userController.userInfo);
 router.post('/createUserInDB', uploadUserPhoto.single('userPhoto'), userController.createUser);
-router.post('/getAllUsers', userController.getAllUsers);
+router.post('/allUsers', userController.allUsers);
 router.post('/updateUserPassword', userController.updateUserPassword);
 router.post('/updatePreferedLang', userController.updatePreferedLang);
 router.post('/updateUserData', userController.updateUserData)

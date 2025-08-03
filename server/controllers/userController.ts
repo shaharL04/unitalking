@@ -37,7 +37,7 @@ class userController{
         }
       }
 
-      async getUserInfo(req: Request, res: Response) {
+      async userInfo(req: Request, res: Response) {
         const authToken = req.cookies.authToken
         console.log(authToken)
         const userId: number | null = validateAuthToken(authToken);
@@ -45,7 +45,7 @@ class userController{
               return res.status(401).json({ message: 'Unauthorized: please signIn' , type:"error" });
           }  
           try{
-            const userInfo = await userService.getUserInfoByUserID(userId)
+            const userInfo = await userService.userInfoByUserID(userId)
             res.status(201).json(userInfo);
           }catch(error){
             console.log('error getting all users:', error);
@@ -69,7 +69,7 @@ class userController{
         }
       }
 
-      async getAllUsers(req:Request, res:Response){
+      async allUsers(req:Request, res:Response){
         const authToken = req.cookies.authToken
         console.log(authToken)
         const userId: number | null = validateAuthToken(authToken);
@@ -77,7 +77,7 @@ class userController{
             return res.status(401).json({ message: 'Unauthorized: Invalid or missing auth token' , type:"error"});
         }  
         try{
-          const allUsers = await userService.getAllUsers(userId)
+          const allUsers = await userService.allUsers(userId)
           res.status(201).json(allUsers);
         }catch(error){
           console.log('error getting all users:', error);

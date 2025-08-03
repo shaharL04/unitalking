@@ -23,7 +23,7 @@ class UserService {
     }
   }
 
-  async getUserInfoByUserID(userId: number): Promise<User> {
+  async userInfoByUserID(userId: number): Promise<User> {
     const query = 'SELECT * FROM users WHERE id = $1';
     try {
       const result: QueryResult<User> = await pool.query(query, [userId]);
@@ -57,7 +57,7 @@ class UserService {
     }
   }
 
-  async getAllUsers(userId: number): Promise<User[]> {
+  async allUsers(userId: number): Promise<User[]> {
     const query = 'SELECT id, username FROM users WHERE id != $1';
     try {
       const result: QueryResult<User> = await pool.query(query, [userId]);

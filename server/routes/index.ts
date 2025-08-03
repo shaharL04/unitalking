@@ -30,9 +30,9 @@ router.get('/getTranslationLangs', messageController.getTranslationLangs)
 
 //Chat routers
 router.post('/retrieveAllChatsTheUserHasByTimeOrder', chatController.retrieveAllChatsTheUserHasByTimeOrder);
-router.post('/createNewChat', uploadChatPhoto.single('groupImage'), chatController.createNewChat);
-router.post('/getChatUsers', chatController.getChatUsers);
-router.post('/getChatInfoByChatId', chatController.getChatInfoByChatId)
+router.post('/newChat', uploadChatPhoto.single('groupImage'), chatController.newChat);
+router.post('/chatUsers', chatController.chatUsers);
+router.post('/chatInfoByChatId', chatController.chatInfoByChatId)
 
 //Translate routers
 //router.post('/api/translate', UserController.createUser);

@@ -71,7 +71,7 @@ class messageController{
         }
     }
 
-    async getTranslationLangs(req: Request, res: Response){
+    async translationLangs(req: Request, res: Response){
         try {
             const response = await axios.get('http://127.0.0.1:5000/languages');
             res.json(response.data);

@@ -25,7 +25,7 @@ router.get('/checkToken', userController.checkIfUserHasToken)
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);
 router.post('/newMessage', messageController.newMessage);
 router.post('/translateNewMessage', messageController.translateNewMessage)
-router.get('/getTranslationLangs', messageController.getTranslationLangs)
+router.get('/translationLangs', messageController.translationLangs)
 
 
 //Chat routers

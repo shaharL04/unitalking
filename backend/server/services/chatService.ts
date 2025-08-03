@@ -41,7 +41,7 @@ class chatService{
       return sortedChatsArrWPhotoPaths;
     }
 
-    async getChatUsers (userId: number, chatID: number): Promise<Chat[]> {
+    async chatUsers (userId: number, chatID: number): Promise<Chat[]> {
       console.log(userId);
       console.log(chatID);
       const query = `
@@ -50,7 +50,7 @@ class chatService{
       
       try {
         const result = await pool.query(query, [userId, chatID]);
-        console.log("this is getChatUsers"+ JSON.stringify(result.rows))
+        console.log("this is chatUsers"+ JSON.stringify(result.rows))
         return result.rows;
       } catch (error) {
         console.error('Error executing query:', error);
@@ -58,7 +58,7 @@ class chatService{
       }
     };
     
-    async createNewChat(groupName: string , photoUnique: string ): Promise<number>{
+    async newChat(groupName: string , photoUnique: string ): Promise<number>{
       const query = `INSERT INTO chats (name, group_photo)VALUES ($1, $2) RETURNING id;`
       try {
         const result = await pool.query(query, [groupName, photoUnique]);
@@ -86,7 +86,7 @@ class chatService{
       }
     }
 
-    async getChatInfoByChatId(chat_id: number): Promise<Chat>{
+    async chatInfoByChatId(chat_id: number): Promise<Chat>{
       const query = `SELECT name, group_photo from chats WHERE id = $1`
       try {
         const result = await pool.query(query, [chat_id]);

@@ -23,9 +23,9 @@ class chatController{
         }
     }
 
-    async getChatUsers(req: Request, res: Response) {
+    async chatUsers(req: Request, res: Response) {
         try {
-            const usersInChats = await chatService.getChatUsers(req.body.currentLoggedUser, req.body.chatID);
+            const usersInChats = await chatService.chatUsers(req.body.currentLoggedUser, req.body.chatID);
             console.log("usersInChats:"+JSON.stringify(usersInChats))
             res.status(200).json({ usersInChats: usersInChats});     
             } catch (error) {
@@ -34,7 +34,7 @@ class chatController{
         }
     }
 
-    async createNewChat(req: Request, res: Response){
+    async newChat(req: Request, res: Response){
         const { groupName, groupMembersArr } = req.body; 
 
         const authToken = req.cookies.authToken
@@ -49,7 +49,7 @@ class chatController{
         const uniqueToSendToDB = fileNameParts[0];
         const parsedgroupMembersArr = JSON.parse(groupMembersArr);
         try{
-            const chat_id = await chatService.createNewChat(groupName, uniqueToSendToDB);
+            const chat_id = await chatService.newChat(groupName, uniqueToSendToDB);
             const insertIntoChatParticipants = await chatService.insertUsersToNewChat(chat_id, parsedgroupMembersArr,userId)
             res.status(200).json({message: "chat was succesfully initiated"})
         }catch(error){
@@ -58,10 +58,10 @@ class chatController{
         }
     }
 
-    async getChatInfoByChatId(req: Request, res: Response){
+    async chatInfoByChatId(req: Request, res: Response){
         const {groupId} = req.body;
         try{
-            const chatObject = await chatService.getChatInfoByChatId(groupId)
+            const chatObject = await chatService.chatInfoByChatId(groupId)
             res.status(200).json({chatObject: chatObject})
         }catch(error){
             console.error('Error sending request:', error);

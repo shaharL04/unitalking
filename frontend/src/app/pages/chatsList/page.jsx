@@ -76,7 +76,7 @@ const ChatsList = () => {
   useEffect(() =>{
     if(newChatData.groupImage != null && newChatData.groupName && newChatData.selectedMembers.length > 0) {
 
-      const createNewChat = async () => {
+      const newChat = async () => {
         try {
           setAlerts([]); // Clear existing alerts before making the request
           const formData = new FormData();
@@ -86,7 +86,7 @@ const ChatsList = () => {
           formData.append('groupImage', newChatData.groupImage);
           
           const response = await axios.post(
-            "http://localhost:8080/createNewChat", 
+            "http://localhost:8080/newChat", 
             formData, 
             {
               withCredentials: true,
@@ -109,7 +109,7 @@ const ChatsList = () => {
       };
       
 
-      createNewChat();
+      newChat();
     }
   },[newChatData])
 
@@ -135,7 +135,7 @@ const ChatsList = () => {
     try {
       setAlerts([]); // Clear existing alerts before making the request
       const response = await axios.post(
-        "http://localhost:8080/getChatUsers", 
+        "http://localhost:8080/chatUsers", 
         {
           currentLoggedUser: chat.user_id,
           chatID: chat.chat_id

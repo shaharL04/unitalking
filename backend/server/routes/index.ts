@@ -13,9 +13,9 @@ const uploadUserPhoto = multer({ storage: multerUserStorage }); // For user prof
 
 //user routers
 router.post('/checkIfUserExistInDB', userController.checkIfUserExists);
-router.post('/getUserInfo', userController.getUserInfo);
+router.post('/userInfo', userController.userInfo);
 router.post('/createUserInDB', uploadUserPhoto.single('userPhoto'), userController.createUser);
-router.post('/getAllUsers', userController.getAllUsers);
+router.post('/allUsers', userController.allUsers);
 router.post('/updateUserPassword', userController.updateUserPassword);
 router.post('/updatePreferedLang', userController.updatePreferedLang);
 router.post('/updateUserData', userController.updateUserData)
@@ -25,14 +25,14 @@ router.get('/checkToken', userController.checkIfUserHasToken)
 router.post('/retrieveChatMessagesInOrder', messageController.retrieveChatMessagesInOrder);
 router.post('/newMessage', messageController.newMessage);
 router.post('/translateNewMessage', messageController.translateNewMessage)
-router.get('/getTranslationLangs', messageController.getTranslationLangs)
+router.get('/translationLangs', messageController.translationLangs)
 
 
 //Chat routers
 router.post('/retrieveAllChatsTheUserHasByTimeOrder', chatController.retrieveAllChatsTheUserHasByTimeOrder);
-router.post('/createNewChat', uploadChatPhoto.single('groupImage'), chatController.createNewChat);
-router.post('/getChatUsers', chatController.getChatUsers);
-router.post('/getChatInfoByChatId', chatController.getChatInfoByChatId)
+router.post('/newChat', uploadChatPhoto.single('groupImage'), chatController.newChat);
+router.post('/chatUsers', chatController.chatUsers);
+router.post('/chatInfoByChatId', chatController.chatInfoByChatId)
 
 //Translate routers
 //router.post('/api/translate', UserController.createUser);

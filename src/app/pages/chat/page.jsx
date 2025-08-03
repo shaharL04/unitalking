@@ -77,7 +77,7 @@ export default function Chat() {
   const getChatInfo = async (groupId) =>{
     try {
       setAlerts([]);
-      const response = await axios.post("http://localhost:8080/getChatInfoByChatId", {
+      const response = await axios.post("http://localhost:8080/chatInfoByChatId", {
         groupId: groupId,
       });
       console.log("this is chat Info: " + JSON.stringify(response.data.chatObject.name));

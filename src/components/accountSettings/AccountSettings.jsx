@@ -14,7 +14,7 @@ const AccountSettings = () => {
     async function fetchTranslationLangs() {
       try {
         setAlerts([]); // Clear existing alerts before making the request
-        const response = await axios.get("http://localhost:8080/getTranslationLangs");
+        const response = await axios.get("http://localhost:8080/translationLangs");
         const modifiedData = response.data.map(({ targets, ...rest }) => rest);
         setLangArr(modifiedData);
         console.log(modifiedData);

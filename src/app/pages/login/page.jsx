@@ -64,7 +64,7 @@ export default function Login() {
       try {
         setAlerts([])
         const response = await axios.get(
-          "http://localhost:8080/getTranslationLangs"
+          "http://localhost:8080/translationLangs"
         );
         const modifiedData = response.data.map(({ targets, ...rest }) => rest);
         modifiedData.unshift({

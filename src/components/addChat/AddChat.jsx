@@ -13,11 +13,11 @@ const AddChat = ({ newChatHandler }) => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    const getAllUsersArray = async () => {
+    const allUsersArray = async () => {
       try {
         setAlerts([]); 
         const response = await axios.post(
-          'http://localhost:8080/getAllUsers',
+          'http://localhost:8080/allUsers',
           { test: "test" },
           { withCredentials: true }
         );
@@ -32,7 +32,7 @@ const AddChat = ({ newChatHandler }) => {
         }
       }
     };    
-    getAllUsersArray();
+    allUsersArray();
   }, []);
 
   const handleGroupNameChange = (e) => {

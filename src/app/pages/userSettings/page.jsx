@@ -41,11 +41,11 @@ const UserSettings = () => {
   },[])
 
   useLayoutEffect(() => {
-    async function getUserInfo() {
+    async function userInfo() {
       try {
         setAlerts([]); 
         const response = await axios.post(
-          "http://localhost:8080/getUserInfo", 
+          "http://localhost:8080/userInfo", 
           { text: "test" }, 
           { withCredentials: true }
         );
@@ -61,7 +61,7 @@ const UserSettings = () => {
       }
     }
 
-    getUserInfo();
+    userInfo();
   }, []);
 
   const componentMap = {
